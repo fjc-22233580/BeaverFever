@@ -58,9 +58,6 @@ public class WorldManager {
         int spawnX = 0;
         int spawnY = 0;
 
-        //[1][2]
-        //[3][4]
-
         // Set the approriate world index based on the direction
         if (direction == Direction.Up && currentRow > 0) {
             currentRow--;
