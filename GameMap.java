@@ -13,9 +13,11 @@ public class GameMap extends World
      * Constructor for objects of class GameMap.
      * 
      */
-    public GameMap()
+    public GameMap(int mapWidth, int mapHeight, boolean isBounded, GreenfootImage backGround)
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-        super(600, 400, 1); 
+        super(mapWidth, mapHeight, 1, isBounded); 
+
+        setBackground(backGround);
     }
 }

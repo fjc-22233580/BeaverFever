@@ -16,10 +16,7 @@ public class TitleScreen extends World
     public TitleScreen()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-        super(600, 400, 1); 
-
-        WorldManager worldManager = WorldManager.getInstance();
-        worldManager.initialize();
+        super(240, 240, 1); 
 
         prepare();
     }
@@ -31,8 +28,9 @@ public class TitleScreen extends World
     private void prepare()
     {
         Button button = new Button();
-        addObject(button,290,237);
+        addObject(button,120,120);
+
         Label label = new Label("BEAVER FEVER", 32);
-        addObject(label,284,148);
+        addObject(label,120,80);
     }
 }
