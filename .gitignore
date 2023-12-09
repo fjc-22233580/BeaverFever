@@ -17,3 +17,7 @@ WorldManager.class
 WorldManager.ctxt
 ObjectTile.class
 ObjectTile.ctxt
+HelperMethods.class
+HelperMethods.ctxt
+MapParser.class
+MapParser.ctxt
