@@ -38,6 +38,9 @@ public class WorldManager {
         // Cache our worlds - first time only.
         if (isInitialised == false) {
 
+            MapParser mapParser = new MapParser();
+            
+
             // Test images for world identification
             List<GreenfootImage> mapNumbers = new ArrayList<>();
             mapNumbers.add(new GreenfootImage("1.png"));
