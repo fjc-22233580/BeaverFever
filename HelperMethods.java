@@ -33,4 +33,17 @@ public class HelperMethods {
 
         return fileName;
     }
+
+    private static boolean isSquare(Object[][] matrix){
+        //Save the length of the array
+        int size = matrix.length;
+    
+        //Loop over all the rows and Check to see if the given row has the same length
+        for (Object[] objects : matrix) {
+
+            if (size != objects.length){ return false; }                
+        }
+        
+        return true;
+    }
 }
