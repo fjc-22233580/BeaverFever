@@ -7,14 +7,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import greenfoot.World;
+
 public class MapParser {
 
-    public MapParser(){
+    private final int ROWS = 15;
+    private final int COLS = 15;
 
+    private HashMap<Integer, String> tileImagesList;
+    private List<String> mapCSVList;
+    
+    private boolean isImportComplete;
+
+    private TileInfo[][] grid = new TileInfo[ROWS][COLS];
+    private World[][] worlds;
+
+    public MapParser(World[][] worlds){
+
+        this.worlds = worlds;
         try {
 
-            getMapFiles("griddata");
-            getFiles("images");
+            mapCSVList = getMapFiles("griddata");
+            tileImagesList = getFiles("images");
+            isImportComplete = true;
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -22,7 +37,7 @@ public class MapParser {
         }
     }
 
-    private void getMapFiles(String mapFilesPath) throws IOException{
+    private List<String> getMapFiles(String mapFilesPath) throws IOException{
         
         List<String> csvPaths = new ArrayList<String>();
         
@@ -40,9 +55,12 @@ public class MapParser {
                 }
             }
         }
-
+        
         System.out.println("Imported CSVs: " + csvPaths.size());
         System.out.println("Imported CSV: " + csvPaths.get(0));
+        
+        return csvPaths;
+
     }
 
     private HashMap<Integer, String> getFiles(String imageTilesPath) throws IOException {

@@ -38,9 +38,8 @@ public class WorldManager {
         // Cache our worlds - first time only.
         if (isInitialised == false) {
 
-            MapParser mapParser = new MapParser();
             
-
+            
             // Test images for world identification
             List<GreenfootImage> mapNumbers = new ArrayList<>();
             mapNumbers.add(new GreenfootImage("1.png"));
@@ -52,19 +51,19 @@ public class WorldManager {
             mapNumbers.add(new GreenfootImage("7.png"));
             mapNumbers.add(new GreenfootImage("8.png"));
             mapNumbers.add(new GreenfootImage("9.png"));
-
-
+            
+            
             GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0));
             firstWorld.addObject(new Beaver(), 120, 120);
             maxX = firstWorld.getWidth();
             maxY = firstWorld.getHeight();
-
+            
             for (int i = 0; i < ROWS; i++) {                
-
+                
                 for (int j = 0; j < COLS; j++) {
                     
                     int imgIndex = i * COLS + j;
-
+                    
                     // Initialise our maps - for the first one we have already instantiated it (to add the player),
                     // so add the correct ref, else create new ones. 
                     if (i == 0 && j == 0) {
@@ -73,14 +72,16 @@ public class WorldManager {
                         GreenfootImage  img = mapNumbers.get(imgIndex);
                         worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img); 
                     }
-
+                    
                     //System.out.print("(" + i + "," + j + " + " + imgIndex +")");
-
+                    
                     //System.out.println();
                 }
-
+                
                 //System.out.println();
             }
+
+            MapParser mapParser = new MapParser(worlds);
             
             isInitialised = true;
         }
