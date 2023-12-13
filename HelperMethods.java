@@ -34,7 +34,7 @@ public class HelperMethods {
         return fileName;
     }
 
-    private static boolean isSquare(Object[][] matrix){
+    public static boolean isSquare(Object[][] matrix){
         //Save the length of the array
         int size = matrix.length;
     
