@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -34,7 +35,7 @@ public class MapParser {
         try {
 
             mapCSVList = getMapFiles("griddata");
-            tileImagesList = getTileImagePaths("images");
+            tileImagesList = getTileImagePaths("images\\tiles");
             isImportComplete = true;
 
         } catch (IOException e) {
@@ -75,21 +76,21 @@ public class MapParser {
             for (int j = 0; j < TILE_ROWS; j++) {
 
                 TileInfo currenTile = currentMapTiles[i][j];
+                
+                if (currenTile != null) {  
 
-                if (currenTile != null) {
-                    
-                    // TODO - create base actor tile
-                    //currentWorld.addObject(new ObjectTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
+                    currentWorld.addObject(new ObjectTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
                 }
             }
         }
-
-
     }
 
     private TileInfo[][] parseMapData(String mapPath) {
 
-        TileInfo[][] grid = new TileInfo[ROWS][COLS];
+        final int TILE_COLS = 15;
+        final int TILE_ROWS = 15;
+
+        TileInfo[][] grid = new TileInfo[TILE_COLS][TILE_ROWS];
 
         int xOffset = 16;
         int yOffset = 16;
@@ -112,14 +113,19 @@ public class MapParser {
                 // Columns
                 for (int i = 0; i < rowValues.length; i++) {
 
-                    int currentItem = Integer.parseInt(rowValues[i]);
+                    int currentItemIndex = Integer.parseInt(rowValues[i]);
 
-                    if (currentItem != -1) {
+                    if (currentItemIndex > -1) {
 
-                        String tilePath = tileImagesList.get(currentItem);
-                        TileInfo currentTile = new TileInfo(x, y, tilePath);
+                        String tilePath = tileImagesList.get(currentItemIndex);
+                        TileInfo currentTile = new TileInfo(currentItemIndex, x, y, tilePath);
                         grid[count][i] = currentTile;
+                    }
 
+                    if (currentItemIndex < -1 || currentItemIndex > tileImagesList.size()) {
+                       
+                        System.out.println("Index out of range: " + currentItemIndex);
+                        throw new IllegalArgumentException();
                     }
 
                     x += xOffset;
@@ -148,7 +154,7 @@ public class MapParser {
 
                 if (Files.isDirectory(path) == false) {
 
-                    String fileName = path.getFileName().toString();
+                    String fileName = path.toString();
 
                     if (HelperMethods.getFileExtension(fileName).equals(".csv")) {
                         csvPaths.add(fileName);
@@ -158,17 +164,19 @@ public class MapParser {
         }
 
         System.out.println("Imported CSVs: " + csvPaths.size());
-        System.out.println("Imported CSV: " + csvPaths.get(0));
 
         return csvPaths;
 
     }
 
+    /** Gets all tile images (.png) from images\tiles and puts them into a Dictionary for quick retrieval.
+     * @param imageTilesPath images\tiles
+     * @return HashMap of all tiles
+     * @throws IOException throws for generic IO Exception
+     */
     private HashMap<Integer, String> getTileImagePaths(String imageTilesPath) throws IOException {
 
         HashMap<Integer, String> imgPaths = new HashMap<Integer, String>();
-
-        int count = 0;
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(imageTilesPath))) {
 
@@ -176,15 +184,26 @@ public class MapParser {
 
                 if (Files.isDirectory(path) == false) {
 
-                    String fileName = path.getFileName().toString();
+                    String filePath = path.getFileName().toString();
 
-                    if (HelperMethods.getFileExtension(fileName).equals(".png")) {
-                        imgPaths.put(count, fileName);
+                    if (HelperMethods.getFileExtension(filePath).equalsIgnoreCase(".png")) {
+
+                        File file = new File(filePath);
+
+                        String fileName = HelperMethods.getFileName(file);
+
+                        int fileNumber = Integer.parseInt(fileName);
+
+                        // Remove "images\\" because for reasons unkown greenfoot hardcoded that folder when creating GreenfootImage
+                        String tilePathString = path.toString().replace("images\\", "");
+
+                        imgPaths.put(fileNumber, tilePathString);
                     }
                 }
-                count++;
             }
         }
+
+        System.out.println("Imported tiles: " + imgPaths.size());
 
         return imgPaths;
     }
