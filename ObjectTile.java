@@ -8,6 +8,12 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class ObjectTile extends Actor
 {
+
+    public ObjectTile(String tilePath) {
+        
+        GreenfootImage tile = new GreenfootImage(tilePath);
+        setImage(tile);
+    }
     /**
      * Act - do whatever the ObjectTile wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
