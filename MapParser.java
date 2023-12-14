@@ -124,7 +124,7 @@ public class MapParser {
 
                     if (currentItemIndex < -1 || currentItemIndex > tileImagesList.size()) {
                        
-                        System.out.println("Index out of range: " + currentItemIndex);
+                        System.out.println("Illegal index range: " + currentItemIndex);
                         throw new IllegalArgumentException();
                     }
 
