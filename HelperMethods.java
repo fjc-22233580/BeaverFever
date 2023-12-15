@@ -46,4 +46,13 @@ public class HelperMethods {
         
         return true;
     }
+
+     /** Helper method to determine if a string is null or empty
+     * 
+     * @param string the text to be processed
+     * @return Returns true if string empty or is null, else returns false.
+     */
+    public static boolean isStringNullOrEmpty(String string) {
+        return string == null || string.isEmpty();
+    }
 }

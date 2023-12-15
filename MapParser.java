@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -24,6 +25,10 @@ public class MapParser {
 
     private World[][] worlds;
 
+    private List<Integer> woodsTiles = new ArrayList<>();
+    private List<Integer> barryTiles = new ArrayList<>();
+    private List<Integer> waterTiles = new ArrayList<>();
+
     public MapParser(World[][] worlds) {
 
         if (HelperMethods.isSquare(worlds)) {
@@ -36,6 +41,8 @@ public class MapParser {
 
     public void prepareAllMaps() {
         try {
+
+            getTileIDs("actortypes");
 
             mapCSVList = getMapFiles("griddata");
             tileImagesList = getTileImagePaths("images\\tiles");
@@ -145,6 +152,64 @@ public class MapParser {
         }
 
         return grid;
+    }
+
+    private void getTileIDs(String actorTypesFolderPath) throws FileNotFoundException, IOException {
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(actorTypesFolderPath))) {
+
+            for (Path path : stream) {
+
+                if (Files.isDirectory(path) == false) {
+
+                    String fileName = path.toString();
+
+                    if (HelperMethods.getFileExtension(fileName).equals(".csv")) {
+
+                        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+                            String line;
+
+                            // Remove headers
+                            br.readLine();
+
+                            while ((line = br.readLine()) != null) {
+
+                                line.split(",");
+
+                                String[] rowValues = line.split(",");
+
+                                if (HelperMethods.isStringNullOrEmpty(rowValues[0]) == false) {
+
+                                    int currentItemIndex = Integer.parseInt(rowValues[0]);
+                                    woodsTiles.add(currentItemIndex);
+
+                                }
+
+                                if (HelperMethods.isStringNullOrEmpty(rowValues[1]) == false) {
+
+                                    int currentItemIndex = Integer.parseInt(rowValues[1]);
+                                    barryTiles.add(currentItemIndex);
+
+                                }
+
+                                if (HelperMethods.isStringNullOrEmpty(rowValues[2]) == false) {
+
+                                    int currentItemIndex = Integer.parseInt(rowValues[2]);
+                                    waterTiles.add(currentItemIndex);
+                                }
+
+                            }
+
+                            System.out.println("Imported IDs: " + woodsTiles.size() + " | " + woodsTiles.get(0));
+                            System.out.println("Imported IDs: " + barryTiles.size() + " | " + barryTiles.get(0));
+                            System.out.println("Imported IDs: " + waterTiles.size() + " | " + waterTiles.get(0));
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private List<String> getMapFiles(String mapFilesPath) throws IOException {
