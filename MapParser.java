@@ -90,7 +90,7 @@ public class MapParser {
                 
                 if (currenTile != null) {  
 
-                    currentWorld.addObject(new ObjectTile(currenTile.getTilePath(), ActorType.OTHER), currenTile.getX(), currenTile.getY());
+                    currentWorld.addObject(new ObjectTile(currenTile.getTilePath(), currenTile.getActorType()), currenTile.getX(), currenTile.getY());
                 }
             }
         }
@@ -124,18 +124,20 @@ public class MapParser {
                 // Columns
                 for (int i = 0; i < rowValues.length; i++) {
 
-                    int currentItemIndex = Integer.parseInt(rowValues[i]);
+                    int currentTileID = Integer.parseInt(rowValues[i]);
 
-                    if (currentItemIndex > -1) {
+                    if (currentTileID > -1) {
 
-                        String tilePath = tileImagesList.get(currentItemIndex);
-                        TileInfo currentTile = new TileInfo(currentItemIndex, x, y, tilePath);
+                        String tilePath = tileImagesList.get(currentTileID);
+
+                        ActorType actorType = getActorType(currentTileID);
+                        TileInfo currentTile = new TileInfo(currentTileID, x, y, tilePath, actorType);
                         grid[count][i] = currentTile;
                     }
 
-                    if (currentItemIndex < -1 || currentItemIndex > tileImagesList.size()) {
+                    if (currentTileID < -1 || currentTileID > tileImagesList.size()) {
                        
-                        System.out.println("Illegal index range: " + currentItemIndex);
+                        System.out.println("Illegal index range: " + currentTileID);
                         throw new IllegalArgumentException();
                     }
 
@@ -153,6 +155,19 @@ public class MapParser {
         }
 
         return grid;
+    }
+
+    private ActorType getActorType(int tileID){
+
+        if (barryTiles.contains(tileID)) {
+            return ActorType.BERRY;
+        } else if (woodsTiles.contains(tileID)) {
+            return ActorType.WOOD;
+        } else if (waterTiles.contains(tileID)) {
+            return ActorType.WATER;
+        } 
+
+        return ActorType.OTHER;
     }
 
     private void getTileIDs(String actorTypesFolderPath) throws FileNotFoundException, IOException {
