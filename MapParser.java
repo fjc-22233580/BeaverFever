@@ -187,8 +187,7 @@ public class MapParser {
 
     private void getTileIDs(String actorTypesFolderPath) throws FileNotFoundException, IOException {
 
-        List<Integer> values = new ArrayList<Integer>();
-
+        
         // Get all files from this folder.
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(actorTypesFolderPath))) {
 
@@ -204,6 +203,8 @@ public class MapParser {
 
                         // Open and read the file contents
                         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+                            List<Integer> values = new ArrayList<Integer>();
                             
                             // Get column header
                             String headerName = br.readLine();
@@ -246,9 +247,9 @@ public class MapParser {
             }
         }
 
-        System.out.println("Imported IDs: " + woodsTiles.size() + " | ");
-        System.out.println("Imported IDs: " + barryTiles.size() + " | ");
-        System.out.println("Imported IDs: " + waterTiles.size() + " | ");
+        System.out.println("Imported IDs wood: " + woodsTiles.size() + " | ");
+        System.out.println("Imported IDs berry: " + barryTiles.size() + " | ");
+        System.out.println("Imported IDs water: " + waterTiles.size() + " | ");
     }
 
     private List<String> getMapFiles(String mapFilesPath) throws IOException {
