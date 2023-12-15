@@ -30,8 +30,11 @@ public class MapParser {
             this.worlds = worlds;
         } else {
             System.out.println("Grid is not square!");
+            throw new IllegalArgumentException();
         }
+    }
 
+    public void prepareAllMaps() {
         try {
 
             mapCSVList = getMapFiles("griddata");

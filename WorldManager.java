@@ -82,6 +82,7 @@ public class WorldManager {
             }
 
             MapParser mapParser = new MapParser(worlds);
+            mapParser.prepareAllMaps();
             
             isInitialised = true;
         }

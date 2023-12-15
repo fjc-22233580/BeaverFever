@@ -154,5 +154,5 @@ target9.y=0
 version=3.0.0
 width=920
 world.lastInstantiated=TitleScreen
-xPosition=430
-yPosition=170
+xPosition=343
+yPosition=171
