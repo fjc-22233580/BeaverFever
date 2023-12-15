@@ -10,9 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import greenfoot.World;
-import greenfoot.core.InternalGreenfootError;
 
 public class MapParser {
 
