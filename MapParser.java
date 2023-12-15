@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import greenfoot.World;
+import greenfoot.core.InternalGreenfootError;
 
 public class MapParser {
 
@@ -156,60 +157,68 @@ public class MapParser {
 
     private void getTileIDs(String actorTypesFolderPath) throws FileNotFoundException, IOException {
 
+        List<Integer> values = new ArrayList<Integer>();
+
+        // Get all files from this folder.
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(actorTypesFolderPath))) {
 
+            // Iterate through files
             for (Path path : stream) {
-
+                
+                // Check if we have files but ignoring directoes
                 if (Files.isDirectory(path) == false) {
 
+                    // Check file is a .csv
                     String fileName = path.toString();
-
                     if (HelperMethods.getFileExtension(fileName).equals(".csv")) {
 
+                        // Open and read the file contents
                         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+                            
+                            // Get column header
+                            String headerName = br.readLine();
 
-                            String line;
+                            // Go through all rows
+                            String rowString;
+                            while ((rowString = br.readLine()) != null) {
 
-                            // Remove headers
-                            br.readLine();
+                                String rowValue = rowString.replace(",", "");
 
-                            while ((line = br.readLine()) != null) {
-
-                                line.split(",");
-
-                                String[] rowValues = line.split(",");
-
-                                if (HelperMethods.isStringNullOrEmpty(rowValues[0]) == false) {
-
-                                    int currentItemIndex = Integer.parseInt(rowValues[0]);
-                                    woodsTiles.add(currentItemIndex);
-
+                                // Check we can parse the values into ints
+                                Integer currentValue = HelperMethods.tryParseInt(rowValue);
+                                if (currentValue != null) {
+                                    values.add(currentValue);
                                 }
-
-                                if (HelperMethods.isStringNullOrEmpty(rowValues[1]) == false) {
-
-                                    int currentItemIndex = Integer.parseInt(rowValues[1]);
-                                    barryTiles.add(currentItemIndex);
-
-                                }
-
-                                if (HelperMethods.isStringNullOrEmpty(rowValues[2]) == false) {
-
-                                    int currentItemIndex = Integer.parseInt(rowValues[2]);
-                                    waterTiles.add(currentItemIndex);
-                                }
-
                             }
 
-                            System.out.println("Imported IDs: " + woodsTiles.size() + " | " + woodsTiles.get(0));
-                            System.out.println("Imported IDs: " + barryTiles.size() + " | " + barryTiles.get(0));
-                            System.out.println("Imported IDs: " + waterTiles.size() + " | " + waterTiles.get(0));
+                            if (headerName.contains("wood")) {
+                                
+                                woodsTiles = new ArrayList<>(values);
 
+                            } else if (headerName.contains("berry")) {
+                                
+                                barryTiles = new ArrayList<>(values);
+
+                            } else if (headerName.contains("water")) {
+
+                                waterTiles = new ArrayList<>(values);
+                                
+                            } else{
+
+                                System.err.println("Invalid Column Header!" + headerName);
+                            }
                         }
+                    } else {
+                        System.err.println("Invalid File Type!");
+                        throw new IllegalArgumentException();
                     }
                 }
             }
         }
+
+        System.out.println("Imported IDs: " + woodsTiles.size() + " | ");
+        System.out.println("Imported IDs: " + barryTiles.size() + " | ");
+        System.out.println("Imported IDs: " + waterTiles.size() + " | ");
     }
 
     private List<String> getMapFiles(String mapFilesPath) throws IOException {
