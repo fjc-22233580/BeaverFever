@@ -88,7 +88,24 @@ public class MapParser {
                 
                 if (currenTile != null) {  
 
-                    currentWorld.addObject(new ObjectTile(currenTile.getTilePath(), currenTile.getActorType()), currenTile.getX(), currenTile.getY());
+                    ActorType type = currenTile.getActorType();
+                    switch (type) {
+                        case BERRY:
+                            currentWorld.addObject(new BerryTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
+                            break;
+
+                        case WOOD:
+                            currentWorld.addObject(new WoodTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
+                            break;
+
+                        case WATER:
+                            currentWorld.addObject(new WaterTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
+                            break;
+
+                        case OTHER:
+                            currentWorld.addObject(new ObjectTile(currenTile.getTilePath(), currenTile.getActorType()), currenTile.getX(), currenTile.getY());
+                            break;
+                    }
                 }
             }
         }
