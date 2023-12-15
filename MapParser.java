@@ -79,7 +79,7 @@ public class MapParser {
                 
                 if (currenTile != null) {  
 
-                    currentWorld.addObject(new ObjectTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
+                    currentWorld.addObject(new ObjectTile(currenTile.getTilePath(), ActorType.OTHER), currenTile.getX(), currenTile.getY());
                 }
             }
         }
