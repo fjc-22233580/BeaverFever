@@ -24,9 +24,9 @@ public class MapParser {
 
     private World[][] worlds;
 
-    private List<Integer> woodsTiles = new ArrayList<>();
-    private List<Integer> barryTiles = new ArrayList<>();
-    private List<Integer> waterTiles = new ArrayList<>();
+    private List<Integer> woodTileIDs = new ArrayList<>();
+    private List<Integer> berryTileIDs = new ArrayList<>();
+    private List<Integer> waterTileIDs = new ArrayList<>();
 
     public MapParser(World[][] worlds) {
 
@@ -42,7 +42,6 @@ public class MapParser {
         try {
 
             getTileIDs("actortypes");
-
             mapCSVList = getMapFiles("griddata");
             tileImagesList = getTileImagePaths("images\\tiles");
             isImportComplete = true;
@@ -53,12 +52,12 @@ public class MapParser {
         }
 
         if (isImportComplete) {
-            populateWorlds();
+            populateAllWorlds();
         }
     }
 
     // Iterates 9 times
-    private void populateWorlds() {
+    private void populateAllWorlds() {
 
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
@@ -70,21 +69,21 @@ public class MapParser {
                 String currentMap = mapCSVList.get(index_1d);
                 TileInfo[][] currentMapTiles = parseMapData(currentMap);
 
-                populateWorld(world, currentMapTiles);                
+                populateMap(world, currentMapTiles);                
             }
         }
     }
 
     // Iterates 225 times
-    private void populateWorld(World currentWorld, TileInfo[][] currentMapTiles ){
+    private void populateMap(World currentWorld, TileInfo[][] currentMapTiles ){
 
         final int TILE_COLS = 15;
         final int TILE_ROWS = 15;
 
-        for (int i = 0; i < TILE_COLS; i++) {
-            for (int j = 0; j < TILE_ROWS; j++) {
+        for (int x = 0; x < TILE_COLS; x++) {
+            for (int y = 0; y < TILE_ROWS; y++) {
 
-                TileInfo currenTile = currentMapTiles[i][j];
+                TileInfo currenTile = currentMapTiles[x][y];
                 
                 if (currenTile != null) {  
 
@@ -174,11 +173,11 @@ public class MapParser {
 
     private ActorType getActorType(int tileID){
 
-        if (barryTiles.contains(tileID)) {
+        if (berryTileIDs.contains(tileID)) {
             return ActorType.BERRY;
-        } else if (woodsTiles.contains(tileID)) {
+        } else if (woodTileIDs.contains(tileID)) {
             return ActorType.WOOD;
-        } else if (waterTiles.contains(tileID)) {
+        } else if (waterTileIDs.contains(tileID)) {
             return ActorType.WATER;
         } 
 
@@ -224,15 +223,15 @@ public class MapParser {
 
                             if (headerName.contains("wood")) {
                                 
-                                woodsTiles = new ArrayList<>(values);
+                                woodTileIDs = new ArrayList<>(values);
 
                             } else if (headerName.contains("berry")) {
                                 
-                                barryTiles = new ArrayList<>(values);
+                                berryTileIDs = new ArrayList<>(values);
 
                             } else if (headerName.contains("water")) {
 
-                                waterTiles = new ArrayList<>(values);
+                                waterTileIDs = new ArrayList<>(values);
                                 
                             } else{
 
@@ -247,9 +246,9 @@ public class MapParser {
             }
         }
 
-        System.out.println("Imported IDs wood: " + woodsTiles.size() + " | ");
-        System.out.println("Imported IDs berry: " + barryTiles.size() + " | ");
-        System.out.println("Imported IDs water: " + waterTiles.size() + " | ");
+        System.out.println("Imported IDs wood: " + woodTileIDs.size() + " | ");
+        System.out.println("Imported IDs berry: " + berryTileIDs.size() + " | ");
+        System.out.println("Imported IDs water: " + waterTileIDs.size() + " | ");
     }
 
     private List<String> getMapFiles(String mapFilesPath) throws IOException {
