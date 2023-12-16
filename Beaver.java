@@ -1,3 +1,5 @@
+import java.util.List;
+
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
@@ -22,11 +24,57 @@ public class Beaver extends Actor
 
     }
 
+    private boolean choppingKeyDown = false;
+    private boolean isCollectingWood = false;
+    private int counter = 0;
+
     /**
      * Act - do whatever the Beaver wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     public void act() {
+
+        if(isCollectingWood) {
+            System.out.println("Collecting wood.");
+            
+            if (counter > 120) {
+                // TODO - Add chopping mechanic
+                System.out.println("Finished Collecting.");
+                isCollectingWood = false;
+                counter = 0;
+            }
+
+            counter++;
+
+        } else {
+
+            handleMovement();
+    
+            if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
+                
+                choppingKeyDown = !choppingKeyDown;
+                
+                if(choppingKeyDown) {
+                    
+                    System.out.println("Looking for tree");
+                    
+                    List<WoodTile> currentWood = getObjectsInRange(25, WoodTile.class);
+                    if(currentWood.size() > 0) {
+
+                        System.out.println("Found some wood!");
+
+                        List<WoodTile> entireTree = getObjectsInRange(50, WoodTile.class);
+                        if (entireTree.size() > 0) {
+                            System.out.println("Found a tree! : " + entireTree.size());
+                            isCollectingWood = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleMovement() {
         // Up
         if (Greenfoot.isKeyDown("w")) {
 
