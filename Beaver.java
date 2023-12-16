@@ -75,12 +75,14 @@ public class Beaver extends Actor
         final int oldX = getX();
         final int oldY = getY();
         setLocation(x, y);
-        if (isTouching(ObjectTile.class) || isTouching(WoodTile.class)) {
+
+        if (isTouching(ObjectTile.class) || isTouching(WoodTile.class) || isTouching(WaterTile.class)) {
 
             // Collided with an object, so revert to previous position.
             setLocation(oldX, oldY);
             return false; // move was not allowed!
         }
+
         return true; // move was allowed!
     }
 }
