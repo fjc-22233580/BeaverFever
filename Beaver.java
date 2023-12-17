@@ -14,6 +14,12 @@ public class Beaver extends Actor
     private WorldManager worldManager = WorldManager.getInstance();
 
     final int VELOCITY = 3;
+    private ObjectManager objectManager;
+
+    public Beaver(ObjectManager objectManager) {
+        this.objectManager = objectManager;
+
+    }
 
     @Override
     protected void addedToWorld(World world) {
@@ -22,11 +28,16 @@ public class Beaver extends Actor
 
         homeWorld = world;
 
+        objectManager.transitionNewWorld(world);
+
+        System.out.println("Player added to different world.");
+
     }
 
     private boolean choppingKeyDown = false;
     private boolean isCollectingWood = false;
     private int counter = 0;
+    private List<WoodTile> currentTree;
 
     /**
      * Act - do whatever the Beaver wants to do. This method is called whenever
@@ -40,6 +51,7 @@ public class Beaver extends Actor
             if (counter > 120) {
                 // TODO - Add chopping mechanic
                 System.out.println("Finished Collecting.");
+                objectManager.removeObjects(currentTree);
                 isCollectingWood = false;
                 counter = 0;
             }
@@ -63,9 +75,9 @@ public class Beaver extends Actor
 
                         System.out.println("Found some wood!");
 
-                        List<WoodTile> entireTree = getObjectsInRange(50, WoodTile.class);
-                        if (entireTree.size() > 0) {
-                            System.out.println("Found a tree! : " + entireTree.size());
+                        currentTree = getObjectsInRange(50, WoodTile.class);
+                        if (currentTree.size() > 0) {
+                            System.out.println("Found a tree! : " + currentTree.size());
                             isCollectingWood = true;
                         }
                     }

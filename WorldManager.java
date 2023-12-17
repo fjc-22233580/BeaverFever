@@ -9,6 +9,8 @@ public class WorldManager {
 
     private static WorldManager instance;
 
+    private ObjectManager objectManager = new ObjectManager();
+
     private final int ROWS = 3;
     private final int COLS = 3;
 
@@ -51,10 +53,12 @@ public class WorldManager {
             mapNumbers.add(new GreenfootImage("7.png"));
             mapNumbers.add(new GreenfootImage("8.png"));
             mapNumbers.add(new GreenfootImage("9.png"));
-            
+
+            ObjectManager objectManager = new ObjectManager();
+            Beaver beaver = new Beaver(objectManager);
             
             GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0));
-            firstWorld.addObject(new Beaver(), 120, 120);
+            firstWorld.addObject(beaver, 120, 120);
             maxX = firstWorld.getWidth();
             maxY = firstWorld.getHeight();
             
