@@ -15,9 +15,11 @@ public class Beaver extends Actor
 
     final int VELOCITY = 3;
     private ObjectManager objectManager;
+    private PlayerStats playerStats;
 
-    public Beaver(ObjectManager objectManager) {
+    public Beaver(ObjectManager objectManager, PlayerStats playerStats) {
         this.objectManager = objectManager;
+        this.playerStats = playerStats;
 
     }
 
@@ -52,6 +54,7 @@ public class Beaver extends Actor
                 // TODO - Add chopping mechanic
                 System.out.println("Finished Collecting.");
                 objectManager.removeObjects(currentTree);
+                playerStats.addWood();
                 isCollectingWood = false;
                 counter = 0;
             }
