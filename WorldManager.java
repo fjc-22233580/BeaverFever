@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import greenfoot.Color;
 import greenfoot.Greenfoot;
 import greenfoot.GreenfootImage;
 import greenfoot.World;
@@ -11,6 +12,8 @@ public class WorldManager {
 
     private ObjectManager objectManager;
     private PlayerStats playerStats;
+    private StatusBar statusBar;
+    private Label statusBarLabel;
 
     private final int ROWS = 3;
     private final int COLS = 3;
@@ -57,10 +60,17 @@ public class WorldManager {
 
             objectManager = new ObjectManager();
             playerStats = new PlayerStats();
+            statusBar = new StatusBar();
+
+            // TODO - Extract all status bar label to seperate class, maybe subclass if its own actor?
+            statusBarLabel = new Label("4", 16);
+            statusBarLabel.setFillColor(Color.BLACK);
+            statusBarLabel.setLineColor(Color.BLACK);
             Beaver beaver = new Beaver(objectManager, playerStats);
             
             GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0));
-            firstWorld.addObject(beaver, 120, 120);
+
+            
             maxX = firstWorld.getWidth();
             maxY = firstWorld.getHeight();
             
@@ -86,9 +96,13 @@ public class WorldManager {
                 
                 //System.out.println();
             }
-
+            
             MapParser mapParser = new MapParser(worlds);
             mapParser.prepareAllMaps();
+
+            firstWorld.addObject(beaver, 120, 120);
+            firstWorld.addObject(statusBar, 40, 10);
+            firstWorld.addObject(statusBarLabel, 25, 10);
             
             isInitialised = true;
         }
