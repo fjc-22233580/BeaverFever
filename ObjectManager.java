@@ -5,7 +5,7 @@ import greenfoot.*;
 public class ObjectManager {
     
     private World currentWorld;
-    private List<Actor> currentObjects;
+    private List<? extends Actor> currentObjects;
     private Actor currentObject;
 
     public ObjectManager() {
@@ -16,11 +16,11 @@ public class ObjectManager {
         this.currentWorld = world;        
     }
 
-    public void removeObjects(List<Actor> objects) {        
+    public void removeObjects(List<? extends Actor> objects) {        
         this.currentObjects = objects;
 
         for (Actor object : objects) {
-            removeObject(object);
+            currentWorld.removeObject(object);
         }
     }
 
