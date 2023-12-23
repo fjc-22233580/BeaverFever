@@ -30,7 +30,7 @@ public class Beaver extends Actor
 
         homeWorld = world;
 
-        objectManager.transitionNewWorld(world);
+        objectManager.setNewWorld(world);
 
         System.out.println("Player added to different world.");
 
