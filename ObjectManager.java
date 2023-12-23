@@ -12,7 +12,7 @@ public class ObjectManager {
 
     }
 
-    public void transitionNewWorld(World world){
+    public void setNewWorld(World world){
         this.currentWorld = world;        
     }
 
