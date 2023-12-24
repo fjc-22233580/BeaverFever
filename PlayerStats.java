@@ -5,7 +5,7 @@ public class PlayerStats {
     private final int MAX_LIVES = 3;
 
     private int woodCount = 0;    
-    private int livesCount;   
+    private int livesCount = 1;  
     private StatusBar statusBar = new StatusBar();
     private Label statusBarLabel = new Label(woodCount, 12); 
     
@@ -43,6 +43,17 @@ public class PlayerStats {
         }
 
         return lifeAdded;
+    }
+
+    public boolean decreaseLife() {
+        livesCount--;
+
+        if (livesCount <= 0) {
+            livesCount = 0;
+            return true;
+        }
+
+        return false;
     }
     
     public int getWoodCount() {

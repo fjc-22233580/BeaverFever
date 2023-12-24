@@ -47,6 +47,8 @@ public class Beaver extends Actor
      */
     public void act() {
 
+        testHealth();
+
         if(isCollectingWood) {
             System.out.println("Collecting wood.");
             
@@ -89,11 +91,34 @@ public class Beaver extends Actor
         }
     }
 
+    private void testHealth() {
+
+        if (isTouching(BerryTile.class)) {            
+
+            if (playerStats.addLife()) {
+                System.out.println("Health added!");
+                Actor healthTiles = getOneIntersectingObject(BerryTile.class);
+                objectManager.removeObject(healthTiles);
+            } else {
+                System.out.println("Max health reached!");
+            }
+        }
+
+        if (Greenfoot.isKeyDown("-")) {
+
+            if (playerStats.decreaseLife()) {
+                System.out.println("You died!");
+            } else {
+                System.out.println("Health decreased!");
+            }
+        }
+    }
+
     private void handleMovement() {
         // Up
         if (Greenfoot.isKeyDown("w")) {
 
-            customSetLocation(getX(), getY() - VELOCITY);
+            collisionSetLocation(getX(), getY() - VELOCITY);
 
             if(getY() < 0){
 
@@ -104,7 +129,7 @@ public class Beaver extends Actor
         // Left
         if (Greenfoot.isKeyDown("a")) {
 
-            customSetLocation(getX() - VELOCITY, getY());
+            collisionSetLocation(getX() - VELOCITY, getY());
 
             if(getX() < 0){
 
@@ -115,7 +140,7 @@ public class Beaver extends Actor
         // Down
         if (Greenfoot.isKeyDown("s")) {
 
-            customSetLocation(getX(), getY() + VELOCITY);
+            collisionSetLocation(getX(), getY() + VELOCITY);
 
             if (getY() > homeWorld.getHeight()) {
                 
@@ -126,7 +151,7 @@ public class Beaver extends Actor
         // Right
         if (Greenfoot.isKeyDown("d")) {
 
-            customSetLocation(getX() + VELOCITY, getY());
+            collisionSetLocation(getX() + VELOCITY, getY());
 
             if (getX() > homeWorld.getWidth()) {
                 worldManager.changeWorld(Direction.Right, getX(), getY(), getWorld(), this);                
@@ -134,7 +159,7 @@ public class Beaver extends Actor
         }
     }
 
-    public boolean customSetLocation(final int x, final int y) {
+    public boolean collisionSetLocation(final int x, final int y) {
         final int oldX = getX();
         final int oldY = getY();
         setLocation(x, y);
