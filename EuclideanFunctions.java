@@ -3,31 +3,33 @@ import java.util.List;
 
 public class EuclideanFunctions {
 
-    @Deprecated
     public static Point getNextPoint(Point currentPoint, Point destinatioPoint, int STEP_SIZE) {
 
-        double xStart = currentPoint.x;
-        double yStart = currentPoint.y;
-        double xNext = destinatioPoint.x;
-        double yNext = destinatioPoint.y;
-
-        double dy = yNext - yStart;
-        double dx = xNext - xStart;
-
-        int nextX = (int) xStart;
-        int nextY = (int) yStart;
-
-        // Check for vertical slope        
-        if (Math.abs(dx) < 1e-6) {        
-            nextY += Math.signum(dy) * STEP_SIZE;
-        } else{
-
-            int direction = (int) Math.signum(dx);
-            nextX += STEP_SIZE * direction;
-            nextY += (dy / dx) * STEP_SIZE * direction;            
+        if (currentPoint == destinatioPoint) {
+            return currentPoint;
         }
 
-        return new Point(nextX, nextY);
+        double x1 = currentPoint.x;
+        double y1 = currentPoint.y;
+        double x2 = destinatioPoint.x;
+        double y2 = destinatioPoint.y;
+
+        // Calculate vector from current to destination
+        double vx = x2 - x1;
+        double vy = y2 - y1;
+
+        // Calculate the magnitude of the vector
+        double magnitude = Math.sqrt(vx * vx + vy * vy);
+
+        // Normalize the vector
+        double ux = vx / magnitude;
+        double uy = vy / magnitude;
+
+        // Calculate the next point
+        double nextX = x1 + STEP_SIZE * ux;
+        double nextY = y1 + STEP_SIZE * uy;
+
+        return new Point((int)nextX, (int)nextY);
     } 
 
     public static Point getNearestPoint(List<Point> pathPoints, double x, double y){       
