@@ -19,12 +19,18 @@ public class Enemy extends Actor
      * A frame is the cycle of each call of the act method, which is usually set to 60Hz.
      */
     private final int VELOCITY = 2; 
+
+    private final int DETECTION_RADIUS = 120;
     
     private EnemyState state;
     
     private List<Point> pathPoints;
     
     private Beaver player;
+    
+    private int locationIndex = 1;    
+    
+    private Point destinationPoint = new Point();
 
     public Enemy(List<Point> pathPoints) {
         
@@ -81,7 +87,8 @@ public class Enemy extends Actor
 
     }
 
-    int delayCounter = 0;
+    // TODO - To be removed
+    private int delayCounter = 0;
     private void attacking() {
 
         // TODO - Add logic to attack the beaver
@@ -117,9 +124,7 @@ public class Enemy extends Actor
 
     }
 
-    private int locationIndex = 1;
-    
-    private Point destinationPoint = new Point();
+
   
     private void patrol() {
 
@@ -158,7 +163,7 @@ public class Enemy extends Actor
 
     private boolean detectPlayer(){
 
-        List<Beaver> wombats = getObjectsInRange(120, Beaver.class); 
+        List<Beaver> wombats = getObjectsInRange(DETECTION_RADIUS, Beaver.class); 
         if (wombats.size() > 0) {
 
             player = wombats.get(0);
