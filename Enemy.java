@@ -73,9 +73,8 @@ public class Enemy extends Actor
        
         state = EnemyState.PATROLLING;
 
-        turnTowards(destinationPoint.x, destinationPoint.y);
-
-        move(VELOCITY);
+        Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, destinationPoint, VELOCITY);
+        setLocation(nextPoint.x, nextPoint.y);
 
     }
 
@@ -97,11 +96,12 @@ public class Enemy extends Actor
         double chasingDistance = EuclideanFunctions.getHypotenuse(getX(), getY(), player.getX(), player.getY());
         if (chasingDistance < 120) {
             
+            Point currentLocation = new Point(getX(), getY());
+            
             Point wombatLocation = new Point(player.getX(), player.getY());
-    
-            turnTowards(wombatLocation.x, wombatLocation.y);
-    
-            move(VELOCITY);
+
+            Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, wombatLocation, VELOCITY);
+            setLocation(nextPoint.x, nextPoint.y);
 
             double attackingDistance = EuclideanFunctions.getHypotenuse(getX(), getY(), player.getX(), player.getY());
             if (attackingDistance < 80) {
@@ -143,9 +143,9 @@ public class Enemy extends Actor
         }
 
         destinationPoint = pathPoints.get(locationIndex);
-        turnTowards(destinationPoint.x, destinationPoint.y);
+        Point nextPoint = EuclideanFunctions.getNextPoint(currentPoint, destinationPoint, VELOCITY);
 
-        move(VELOCITY);
+        setLocation(nextPoint.x, nextPoint.y);
 
         if (detectPlayer()) {
             state = EnemyState.CHASING;
