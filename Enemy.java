@@ -70,6 +70,9 @@ public class Enemy extends Actor
         Point currentLocation = new Point(getX(), getY());
 
         destinationPoint = EuclideanFunctions.getNearestPoint(pathPoints, currentLocation.x, currentLocation.y);
+
+        // Set the location index to the nearest point, so patrolling can continue from there
+        locationIndex = pathPoints.indexOf(destinationPoint);
        
         state = EnemyState.PATROLLING;
 
