@@ -16,6 +16,9 @@ public class Button extends Actor
     {
         if (Greenfoot.mouseClicked(this)) {
             WorldManager manager = WorldManager.getInstance();
+
+            //manager.setDevMode();
+
             manager.initialize();
             manager.beginGame();
         }
