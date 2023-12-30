@@ -20,7 +20,7 @@ public class Enemy extends Actor
      */
     private final int VELOCITY = 2; 
 
-    private final int DETECTION_RADIUS = 120;
+    private final int DETECTION_RADIUS = 40;
     
     private EnemyState state;
     
@@ -28,7 +28,7 @@ public class Enemy extends Actor
     
     private Beaver player;
     
-    private int locationIndex = 1;    
+    private int locationIndex = 0;    
     
     private Point destinationPoint = new Point();
 
@@ -40,6 +40,9 @@ public class Enemy extends Actor
         }
 
         this.pathPoints = pathPoints;
+
+        GreenfootImage image = new GreenfootImage("wolverine.png");
+        setImage(image);
 
         // Set the initial state
         state = EnemyState.PATROLLING;
@@ -104,7 +107,7 @@ public class Enemy extends Actor
 
 
         double chasingDistance = EuclideanFunctions.getHypotenuse(getX(), getY(), player.getX(), player.getY());
-        if (chasingDistance < 120) {
+        if (chasingDistance < 30) {
             
             Point currentLocation = new Point(getX(), getY());
             
@@ -114,7 +117,7 @@ public class Enemy extends Actor
             setLocation(nextPoint.x, nextPoint.y);
 
             double attackingDistance = EuclideanFunctions.getHypotenuse(getX(), getY(), player.getX(), player.getY());
-            if (attackingDistance < 80) {
+            if (attackingDistance < 10) {
                 state = EnemyState.ATTACKING;
             }
 
