@@ -41,12 +41,21 @@ public class WorldManager {
 
     private boolean isInitialised = false;
 
+    private boolean isDevMode = false;
+
+    private EnemyPathsManager enemyPathsManager;
+
+
+    public EnemyPathsManager getEnemyPathsManager() {
+        return enemyPathsManager;
+    }
 
     public void initialize() {
 
         // Cache our worlds - first time only.
         if (isInitialised == false) {
 
+            enemyPathsManager = new EnemyPathsManager();
             
             
             // Test images for world identification
@@ -66,7 +75,7 @@ public class WorldManager {
 
             Beaver beaver = new Beaver(objectManager, playerStats);
             
-            GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0));
+            GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
 
             
             maxX = firstWorld.getWidth();
@@ -76,19 +85,18 @@ public class WorldManager {
                 
                 for (int j = 0; j < COLS; j++) {
                     
-                    int imgIndex = i * COLS + j;
+                    int worldIndex_1d = i * COLS + j;
                     
                     // Initialise our maps - for the first one we have already instantiated it (to add the player),
                     // so add the correct ref, else create new ones. 
                     if (i == 0 && j == 0) {
                         worlds[i][j] = firstWorld;
                     } else {
-                        GreenfootImage  img = mapNumbers.get(imgIndex);
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img); 
+                        GreenfootImage  img = mapNumbers.get(worldIndex_1d);
+                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d); 
                     }
                     
-                    //System.out.print("(" + i + "," + j + " + " + imgIndex +")");
-                    
+                    //System.out.print("(" + i + "," + j + " + " + imgIndex +")");                    
                     //System.out.println();
                 }
                 
@@ -101,9 +109,22 @@ public class WorldManager {
             firstWorld.addObject(beaver, 120, 120);
             firstWorld.addObject(playerStats.getStatusBar(), 40, 10);
             firstWorld.addObject(playerStats.getStatusBarLabel(), 25, 10);
+
+            
+
+            Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(7));
+
+            int x = enemyPathsManager.getEnemyPath(7).get(0).x;
+            int y = enemyPathsManager.getEnemyPath(7).get(0).y;
+
+            worlds[2][1].addObject(enemy, x, y-20);
             
             isInitialised = true;
         }
+    }
+
+    public void setDevMode() {
+        isDevMode = true;
     }
 
     public void beginGame(){        
