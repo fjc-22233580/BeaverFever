@@ -7,8 +7,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @version (a version number or a date)
  */
 public class TitleScreen extends World
-{
-    // Test123
+{  
 
     /**
      * Constructor for objects of class TitleScreen.
