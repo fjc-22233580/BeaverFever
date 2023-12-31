@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,19 +109,25 @@ public class WorldManager {
 
             firstWorld.addObject(beaver, 120, 120);
             firstWorld.addObject(playerStats.getStatusBar(), 40, 10);
-            firstWorld.addObject(playerStats.getStatusBarLabel(), 25, 10);
+            firstWorld.addObject(playerStats.getStatusBarLabel(), 25, 10);            
 
-            
-
-            Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(7));
-
-            int x = enemyPathsManager.getEnemyPath(7).get(0).x;
-            int y = enemyPathsManager.getEnemyPath(7).get(0).y;
-
-            worlds[2][1].addObject(enemy, x, y-20);
+            if(isDevMode == false) {
+                addEnemies();
+            }
             
             isInitialised = true;
         }
+    }
+
+    private void addEnemies() {
+
+        int x = enemyPathsManager.getEnemyPath(7).get(0).x;
+        int y = enemyPathsManager.getEnemyPath(7).get(0).y;
+
+        Point defaultLocation = new Point(x, y);
+
+        Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(7), defaultLocation);
+        worlds[2][1].addObject(enemy, x, y-20);
     }
 
     public void setDevMode() {
@@ -136,6 +143,8 @@ public class WorldManager {
         callingWorld.removeObject(callingWombat);
         callingWorld.removeObject(playerStats.getStatusBar());
         callingWorld.removeObject(playerStats.getStatusBarLabel());
+
+        resetEnemy(callingWorld);
 
         int spawnX = 0;
         int spawnY = 0;
@@ -165,7 +174,18 @@ public class WorldManager {
         destination.addObject(playerStats.getStatusBar(), 40, 10);
         destination.addObject(playerStats.getStatusBarLabel(), 25, 10);
 
-
         Greenfoot.setWorld(destination);
+    }
+
+    private void resetEnemy(World callingWorld) {
+
+        List<Enemy> enemies = callingWorld.getObjects(Enemy.class);
+
+        if (enemies.size() > 0) {
+            Enemy enemy = enemies.get(0);
+            enemy.reset();            
+        }
+
+        
     }
 }
