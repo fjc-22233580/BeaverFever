@@ -17,6 +17,12 @@ public class Beaver extends Actor
     private ObjectManager objectManager;
     private PlayerStats playerStats;
 
+    private boolean isBeingAttacked = false;
+
+    public void setBeingAttacked(boolean isBeingAttacked) {
+        this.isBeingAttacked = isBeingAttacked;
+    }
+
     public Beaver(ObjectManager objectManager, PlayerStats playerStats) {
         this.objectManager = objectManager;
         this.playerStats = playerStats;
@@ -49,41 +55,47 @@ public class Beaver extends Actor
 
         testHealth();
 
-        if(isCollectingWood) {
-            System.out.println("Collecting wood.");
+        if (isBeingAttacked) {
+            System.out.println("Being attacked!");
             
-            if (counter > 120) {
-                // TODO - Add chopping mechanic
-                System.out.println("Finished Collecting.");
-                objectManager.removeObjects(currentTree);
-                playerStats.addWood();
-                isCollectingWood = false;
-                counter = 0;
-            }
-
-            counter++;
-
         } else {
 
-            handleMovement();
-    
-            if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
-                
-                choppingKeyDown = !choppingKeyDown;
-                
-                if(choppingKeyDown) {
-                    
-                    System.out.println("Looking for tree");
-                    
-                    List<WoodTile> currentWood = getObjectsInRange(25, WoodTile.class);
-                    if(currentWood.size() > 0) {
+            if (isCollectingWood) {
+                System.out.println("Collecting wood.");
 
-                        System.out.println("Found some wood!");
+                if (counter > 120) {
+                    // TODO - Add chopping mechanic
+                    System.out.println("Finished Collecting.");
+                    objectManager.removeObjects(currentTree);
+                    playerStats.addWood();
+                    isCollectingWood = false;
+                    counter = 0;
+                }
 
-                        currentTree = getObjectsInRange(50, WoodTile.class);
-                        if (currentTree.size() > 0) {
-                            System.out.println("Found a tree! : " + currentTree.size());
-                            isCollectingWood = true;
+                counter++;
+
+            } else {
+
+                handleMovement();
+
+                if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
+
+                    choppingKeyDown = !choppingKeyDown;
+
+                    if (choppingKeyDown) {
+
+                        System.out.println("Looking for tree");
+
+                        List<WoodTile> currentWood = getObjectsInRange(25, WoodTile.class);
+                        if (currentWood.size() > 0) {
+
+                            System.out.println("Found some wood!");
+
+                            currentTree = getObjectsInRange(50, WoodTile.class);
+                            if (currentTree.size() > 0) {
+                                System.out.println("Found a tree! : " + currentTree.size());
+                                isCollectingWood = true;
+                            }
                         }
                     }
                 }
@@ -164,7 +176,7 @@ public class Beaver extends Actor
         final int oldY = getY();
         setLocation(x, y);
 
-        if (isTouching(ObjectTile.class) || isTouching(WoodTile.class) || isTouching(WaterTile.class)) {
+        if (isTouching(ObjectTile.class) || isTouching(WoodTile.class) || isTouching(WaterTile.class) || isTouching(Enemy.class)) {
 
             // Collided with an object, so revert to previous position.
             setLocation(oldX, oldY);
