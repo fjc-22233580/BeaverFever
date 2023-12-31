@@ -9,131 +9,197 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @version (a version number or a date)
  */
 public class Beaver extends Actor
-{
-    private World homeWorld;
-    private WorldManager worldManager = WorldManager.getInstance();
+{   
+    /**
+     * The velocity of the beaver.
+     */
+    private final int VELOCITY = 3;
 
-    final int VELOCITY = 3;
+    /**
+     * The maximum time it takes to chop wood - expressed as game cycles per second.
+     */
+    private final int MAX_CHOPPING_TIME = 120;
+    
+    /**
+     * Reference to the current world - used to determine when cross the edge of the world. 
+     */
+    private World currentWorld;
+
+    /**
+     * Reference to the world manager - used to to call the changeWorld method.
+     */
+    private WorldManager worldManager = WorldManager.getInstance();
+    
+    /**
+     * Reference to the object manager - used to cache and remove objects from the world.
+     */
     private ObjectManager objectManager;
+
+    /**
+     * Reference to the player stats - used to add wood and health.
+     */
     private PlayerStats playerStats;
 
-    private boolean isBeingAttacked = false;
+    /**
+     * The current state of the beaver, can be one of the following:
+     * MOVING, CHOPPING, SEARCHING_FOR_WOOD, RX_DAMAGE, RX_HEALTH
+     */
+    private BeaverState currentState;
 
-    public void setBeingAttacked(boolean isBeingAttacked) {
-        this.isBeingAttacked = isBeingAttacked;
-    }
+    /**
+     * Flag to determine if the chopping key is down - used to make sure the key is only pressed once.
+     */
+    private boolean choppingKeyDown = false;
 
+    /**
+     * Counter to keep track of the time spent chopping wood.
+     */
+    private int woodChoppingTimeCounter = 0;
+
+    /**
+     * List of wood tiles that make up the current tree.
+     */
+    private List<WoodTile> currentTree;
+    
     public Beaver(ObjectManager objectManager, PlayerStats playerStats) {
         this.objectManager = objectManager;
         this.playerStats = playerStats;
-
+        
+        // Set default state for beaver.
+        currentState = BeaverState.MOVING; 
     }
-
+    
+    /**
+     * Called when the object is added to the world.
+     * Overrides the addedToWorld method from the superclass.     * 
+     * @param world the world to which the object is added
+     */
     @Override
     protected void addedToWorld(World world) {
         // TODO Auto-generated method stub
         super.addedToWorld(world);
-
-        homeWorld = world;
-
+        
+        currentWorld = world;
+        
         objectManager.setNewWorld(world);
-
+        
         System.out.println("Player added to different world.");
-
+        
     }
 
-    private boolean choppingKeyDown = false;
-    private boolean isCollectingWood = false;
-    private int counter = 0;
-    private List<WoodTile> currentTree;
+    /**
+     * Sets the state of the beaver based on whether it is being attacked or not - this is called from the Enemy class.
+     * If the beaver is being attacked, the state is set to RX_DAMAGE.
+     * If the beaver is not being attacked, the state is set to MOVING.
+     *
+     * @param isBeingAttacked true if the beaver is being attacked, false otherwise
+     */
+    public void setBeingAttacked(boolean isBeingAttacked) {
+
+        if (isBeingAttacked) {
+            currentState = BeaverState.RX_DAMAGE;
+        } else {
+            currentState = BeaverState.MOVING;
+        }
+    }
 
     /**
      * Act - do whatever the Beaver wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     public void act() {
-
-        testHealth();
-
-        if (isBeingAttacked) {
-            System.out.println("Being attacked!");
-            
-        } else {
-
-            if (isCollectingWood) {
-                System.out.println("Collecting wood.");
-
-                if (counter > 120) {
-                    // TODO - Add chopping mechanic
-                    System.out.println("Finished Collecting.");
-                    objectManager.removeObjects(currentTree);
-                    playerStats.addWood();
-                    isCollectingWood = false;
-                    counter = 0;
-                }
-
-                counter++;
-
-            } else {
-
+       
+        // Carry out various actions based on the current state.
+        switch (currentState) {
+            case MOVING:
                 handleMovement();
-
-                if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
-
-                    choppingKeyDown = !choppingKeyDown;
-
-                    if (choppingKeyDown) {
-
-                        System.out.println("Looking for tree");
-
-                        List<WoodTile> currentWood = getObjectsInRange(25, WoodTile.class);
-                        if (currentWood.size() > 0) {
-
-                            System.out.println("Found some wood!");
-
-                            currentTree = getObjectsInRange(50, WoodTile.class);
-                            if (currentTree.size() > 0) {
-                                System.out.println("Found a tree! : " + currentTree.size());
-                                isCollectingWood = true;
-                            }
-                        }
-                    }
-                }
-            }
+                break;
+            case SEARCHING_FOR_WOOD:
+                searchForWood();
+                break;
+            case CHOPPING:
+                chopping();
+                break;
+            case RX_DAMAGE:
+                receiveDamage();
+                break;
+            case RX_HEALTH:
+                collectHealth();
+                break;
+            default:
+                break;
         }
     }
 
-    private void testHealth() {
+    private void chopping() {
 
-        if (isTouching(BerryTile.class)) {            
+        // TODO - Add chopping gif to start here and end once inside below if statement.
+        System.out.println("Collecting wood.");
 
-            if (playerStats.addLife()) {
-                System.out.println("Health added!");
-                Actor healthTiles = getOneIntersectingObject(BerryTile.class);
-                objectManager.removeObject(healthTiles);
-            } else {
-                System.out.println("Max health reached!");
-            }
+        if (woodChoppingTimeCounter > MAX_CHOPPING_TIME) {
+
+            System.out.println("Finished Collecting.");
+
+            // Remove selected wood tiles from the world.
+            objectManager.removeObjects(currentTree);
+            
+            // Add wood to the player stats.
+            playerStats.addWood();
+
+            // Reset the state and time.
+            currentState = BeaverState.MOVING;
+            woodChoppingTimeCounter = 0;
         }
 
-        if (Greenfoot.isKeyDown("-")) {
+        woodChoppingTimeCounter++;
+    }
 
-            if (playerStats.decreaseLife()) {
-                System.out.println("You died!");
-            } else {
-                System.out.println("Health decreased!");
-            }
+
+    private void collectHealth() {
+
+        if (playerStats.canAddLife()) {
+            System.out.println("Health added!");
+            Actor healthTiles = getOneIntersectingObject(BerryTile.class);
+            objectManager.removeObject(healthTiles);
         }
+
+        currentState = BeaverState.MOVING;
+    }
+
+    private void receiveDamage() {
+
+        if (playerStats.decreaseLife()) {
+            System.out.println("You died!");
+        } else {
+            System.out.println("Health decreased!");
+        }
+        currentState = BeaverState.MOVING;
     }
 
     private void handleMovement() {
+
+        if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
+
+            choppingKeyDown = !choppingKeyDown;
+
+            if (choppingKeyDown) {
+                currentState = BeaverState.SEARCHING_FOR_WOOD;
+            }
+        }
+
+        if (isTouching(BerryTile.class)) {
+
+            if (playerStats.getLivesCount() < playerStats.getMAX_LIVES()) {                
+                currentState = BeaverState.RX_HEALTH;            
+            }
+        }
+
         // Up
         if (Greenfoot.isKeyDown("w")) {
 
             collisionSetLocation(getX(), getY() - VELOCITY);
 
             if(getY() < 0){
-
                 worldManager.changeWorld(Direction.Up, getX(), getY(), getWorld(), this);
             }
         }
@@ -144,7 +210,6 @@ public class Beaver extends Actor
             collisionSetLocation(getX() - VELOCITY, getY());
 
             if(getX() < 0){
-
                 worldManager.changeWorld(Direction.Left, getX(), getY(), getWorld(), this);
             }
         }
@@ -154,8 +219,7 @@ public class Beaver extends Actor
 
             collisionSetLocation(getX(), getY() + VELOCITY);
 
-            if (getY() > homeWorld.getHeight()) {
-                
+            if (getY() > currentWorld.getHeight()) {                
                 worldManager.changeWorld(Direction.Down, getX(), getY(), getWorld(), this);
             }
         }
@@ -165,24 +229,42 @@ public class Beaver extends Actor
 
             collisionSetLocation(getX() + VELOCITY, getY());
 
-            if (getX() > homeWorld.getWidth()) {
+            if (getX() > currentWorld.getWidth()) {
                 worldManager.changeWorld(Direction.Right, getX(), getY(), getWorld(), this);                
             }
         }
     }
 
-    public boolean collisionSetLocation(final int x, final int y) {
+    private void searchForWood() {
+        System.out.println("Looking for tree");
+
+        // Look for a wood tile
+        List<WoodTile> currentWood = getObjectsInRange(25, WoodTile.class);
+        if (currentWood.size() > 0) {
+
+            System.out.println("Found some wood!");
+
+            // Now make sure we "get" the whole tree, or,
+            // all wood type tiles that are touching each other.
+            currentTree = getObjectsInRange(50, WoodTile.class);
+            if (currentTree.size() > 0) {
+                System.out.println("Found a tree! : " + currentTree.size());
+
+                currentState = BeaverState.CHOPPING;
+            }
+        }
+    }
+
+    private void collisionSetLocation(final int x, final int y) {
         final int oldX = getX();
         final int oldY = getY();
         setLocation(x, y);
 
+        // In case we collie with any of the following objects, revert to the previous position.
         if (isTouching(ObjectTile.class) || isTouching(WoodTile.class) || isTouching(WaterTile.class) || isTouching(Enemy.class)) {
 
             // Collided with an object, so revert to previous position.
             setLocation(oldX, oldY);
-            return false; // move was not allowed!
         }
-
-        return true; // move was allowed!
     }
 }
