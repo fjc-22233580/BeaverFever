@@ -33,16 +33,16 @@ public class PlayerStats {
         System.out.println("Wood count: " + woodCount); 
     }
 
-    public boolean addLife() {
-        boolean lifeAdded = false;
-        livesCount++;
+    public boolean canAddLife() {
+        
+        boolean canAddLife = false;
 
         if (livesCount < MAX_LIVES) {
             livesCount++;
-            lifeAdded = true;
+            canAddLife = true;
         }
 
-        return lifeAdded;
+        return canAddLife;
     }
 
     public boolean decreaseLife() {
