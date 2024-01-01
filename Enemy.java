@@ -138,7 +138,7 @@ public class Enemy extends Actor
 
         Point currentLocation = new Point(getX(), getY());
 
-        destinationPoint = EuclideanFunctions.getNearestPoint(pathPoints, currentLocation.x, currentLocation.y);
+        destinationPoint = EuclideanFunctions.getNearestPoint(pathPoints, currentLocation);
         
         // Set the location index to the nearest point, so patrolling can continue from there
         locationIndex = pathPoints.indexOf(destinationPoint);
@@ -171,16 +171,16 @@ public class Enemy extends Actor
     
     private void chasing() {
 
-        double chasingDistance = EuclideanFunctions.getHypotenuse(getX(), getY(), player.getX(), player.getY());
-        if (chasingDistance < CHASING_RADIUS && canAttack) {
-            
-            Point currentLocation = new Point(getX(), getY());            
-            Point wombatLocation = new Point(player.getX(), player.getY());
+        Point currentLocation = new Point(getX(), getY());            
+        Point playerLocation = new Point(player.getX(), player.getY());
 
-            Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, wombatLocation, VELOCITY);
+        double chasingDistance = EuclideanFunctions.getDistance(currentLocation, playerLocation);
+        if (chasingDistance < CHASING_RADIUS && canAttack) {            
+
+            Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, playerLocation, VELOCITY);
             collisionSetLocation(nextPoint.x, nextPoint.y);
 
-            double attackingDistance = EuclideanFunctions.getHypotenuse(getX(), getY(), player.getX(), player.getY());
+            double attackingDistance = EuclideanFunctions.getDistance(currentLocation, playerLocation);
             if (attackingDistance < ATTACKING_RADIUS) {
                 state = EnemyState.ATTACKING;                
             }
