@@ -9,13 +9,16 @@ public class WorldManager {
 
     // #region TODO List:
 
-        // 1. Add counter for health - currently only wood is reported.
+        // 1. Add counter for health - currently only wood is reported, and maybe build timer??
         // 2. Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
         // builds a portion of the bridge with a small time - can be based off the game cycle iteration. 
         // 3. Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
         // 4. Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
         // 5. Add logic for reaching the princess, and goes to "Finish" screen.
         // 6. Add logic for running out of lives, and goes to "Game Over" screen.
+        // 7. Add comments to everything
+        // 8. Review all code, any duplication?
+        // Complete - 9. Re-factor getNextPoint method
 
         // ArtWork:
         // 1. Create beaver chopping gif.
