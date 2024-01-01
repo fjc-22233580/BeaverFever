@@ -14,30 +14,54 @@ public class GameMap extends World
     private int worldId;
 
     private List<Point> pathPoints = new ArrayList<Point>();
-    public List<Point> getPathPoints() {
-        return pathPoints;
-    }
 
     private boolean devMode;
 
     private EnemyPathsManager enemyPathsManager = WorldManager.getInstance().getEnemyPathsManager();
 
+    private boolean hasBridge;
+
+    private Point constructionLocation;   
+    
     /**
      * Constructor for objects of class GameMap.
      * 
      */
-    public GameMap(int mapWidth, int mapHeight, boolean isBounded, GreenfootImage backGround, boolean devMod, int worldId)
+    public GameMap(int mapWidth, int mapHeight, boolean isBounded, GreenfootImage backGround, boolean devMod, int worldId, boolean hasBridge)
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(mapWidth, mapHeight, 1, isBounded);
         this.devMode = devMod;
-        this.worldId = worldId; 
-
-        setBackground(backGround);
-
-
+        this.worldId = worldId;
+        this.hasBridge = hasBridge;
+        
+        setBackground(backGround); 
     }
 
+    /**
+     * Constructor for objects of class GameMap.
+     * 
+     */
+    public GameMap(int mapWidth, int mapHeight, boolean isBounded, GreenfootImage backGround, boolean devMod, int worldId, boolean hasBridge, Point constructionLocation)
+    {    
+        // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
+        super(mapWidth, mapHeight, 1, isBounded);
+        this.devMode = devMod;
+        this.worldId = worldId;
+        this.hasBridge = hasBridge;
+        this.constructionLocation = constructionLocation; 
+        
+        setBackground(backGround);
+    }
+    
+    public boolean getHasBridge() {
+        return hasBridge;
+    }
+
+    public Point getConstructionLocation() {
+        return constructionLocation;
+    }
+    
     @Override
     public void act() {
         super.act();
@@ -54,10 +78,6 @@ public class GameMap extends World
     
                 addObject(new Locator(),mousePoint.x,mousePoint.y);   
                 enemyPathsManager.savePaths(worldId, pathPoints);             
-            }
-
-            if (Greenfoot.isKeyDown("space")) {
-                
             }
         }
     }
