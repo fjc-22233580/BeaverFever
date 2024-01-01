@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.util.List;
 
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
@@ -23,8 +24,8 @@ public class Beaver extends Actor
     /**
      * Reference to the current world - used to determine when cross the edge of the world. 
      */
-    private World currentWorld;
-
+    private GameMap currentWorld;
+    
     /**
      * Reference to the world manager - used to to call the changeWorld method.
      */
@@ -34,17 +35,27 @@ public class Beaver extends Actor
      * Reference to the object manager - used to cache and remove objects from the world.
      */
     private ObjectManager objectManager;
-
+    
     /**
      * Reference to the player stats - used to add wood and health.
      */
     private PlayerStats playerStats;
-
+    
     /**
      * The current state of the beaver, can be one of the following:
      * MOVING, CHOPPING, SEARCHING_FOR_WOOD, RX_DAMAGE, RX_HEALTH
      */
-    private BeaverState currentState;
+    private BeaverState currentState;    
+    
+    /**
+     * Counter to keep track of the time spent chopping wood.
+     */
+    private int woodChoppingTimeCounter = 0;
+    
+    /**
+     * List of wood tiles that make up the current tree.
+     */
+    private List<WoodTile> currentTree;
 
     /**
      * Flag to determine if the chopping key is down - used to make sure the key is only pressed once.
@@ -52,14 +63,9 @@ public class Beaver extends Actor
     private boolean choppingKeyDown = false;
 
     /**
-     * Counter to keep track of the time spent chopping wood.
+     * Flag to determine if the building key is down - used to make sure the key is only pressed once.
      */
-    private int woodChoppingTimeCounter = 0;
-
-    /**
-     * List of wood tiles that make up the current tree.
-     */
-    private List<WoodTile> currentTree;
+    private boolean buildingKeyDown = false;
     
     public Beaver(ObjectManager objectManager, PlayerStats playerStats) {
         this.objectManager = objectManager;
@@ -79,7 +85,7 @@ public class Beaver extends Actor
         // TODO Auto-generated method stub
         super.addedToWorld(world);
         
-        currentWorld = world;
+        currentWorld = (GameMap)world;
         
         objectManager.setNewWorld(world);
         
@@ -108,7 +114,7 @@ public class Beaver extends Actor
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     public void act() {
-       
+
         // Carry out various actions based on the current state.
         switch (currentState) {
             case MOVING:
@@ -126,9 +132,48 @@ public class Beaver extends Actor
             case RX_HEALTH:
                 collectHealth();
                 break;
+            case RX_KEY:
+                collectKey();
+                break;
+            case BRIDGE_BUILDING:
+                buildBridge();
+                break;
             default:
                 break;
         }
+    }
+
+    private void buildBridge() {
+        // TODO - Add logic to build bridge
+        // TODO - Rename world getter to something more appropriate.
+
+        if (currentWorld.getHasBridge()) {
+
+            if (getX() == currentWorld.getConstructionLocation().x && getY() == currentWorld.getConstructionLocation().y) {
+                
+                Actor waterTile = getOneObjectAtOffset(0, 16, WaterTile.class);
+                if (waterTile != null) {
+
+                    System.out.println("Found water tile!");
+
+                    Point bridgeLocation = new Point(waterTile.getX(), waterTile.getY());
+                    objectManager.removeObject(waterTile);
+                    objectManager.addBridgeTile(bridgeLocation);
+                }
+            }            
+        }
+    }
+
+    private void collectKey() {
+
+        Actor key = getOneIntersectingObject(Key.class);
+        if (key != null) {
+            objectManager.removeObject(key);
+            playerStats.collectKey();
+            System.out.println("Key collected!");
+        }
+
+        currentState = BeaverState.MOVING;
     }
 
     private void chopping() {
@@ -176,7 +221,22 @@ public class Beaver extends Actor
         currentState = BeaverState.MOVING;
     }
 
+
     private void handleMovement() {
+
+        if (buildingKeyDown != Greenfoot.isKeyDown("b")) {
+            
+            buildingKeyDown = !buildingKeyDown;
+
+            if (buildingKeyDown) {
+                currentState = BeaverState.BRIDGE_BUILDING;
+            }
+        }
+
+        if (isTouching(Key.class)) {
+            System.out.println("Key found!");
+            currentState = BeaverState.RX_KEY;
+        }
 
         if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
 
