@@ -9,7 +9,7 @@ public class WorldManager {
 
     // #region TODO List:
 
-        // 1. Add counter for health - currently only wood is reported, and maybe build timer??
+        // Complete - 1. Add counter for health - currently only wood is reported.
         // 2. Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
         // builds a portion of the bridge with a small time - can be based off the game cycle iteration. 
         // 3. Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
@@ -19,6 +19,7 @@ public class WorldManager {
         // 7. Add comments to everything
         // 8. Review all code, any duplication?
         // Complete - 9. Re-factor getNextPoint method
+        // 10. Increase rad of tree collection - large tree is partially missed. 
 
         // ArtWork:
         // 1. Create beaver chopping gif.
@@ -131,8 +132,8 @@ public class WorldManager {
             mapParser.prepareAllMaps();
 
             firstWorld.addObject(beaver, 120, 120);
-            firstWorld.addObject(playerStats.getStatusBar(), 40, 10);
-            firstWorld.addObject(playerStats.getStatusBarLabel(), 25, 10);            
+            
+            playerStats.addStatusBarToWorld(firstWorld);           
 
             if(isDevMode == false) {
                 addEnemies();
@@ -164,8 +165,6 @@ public class WorldManager {
     public void changeWorld(Direction direction, int x, int y, World callingWorld, Beaver callingWombat){
 
         callingWorld.removeObject(callingWombat);
-        callingWorld.removeObject(playerStats.getStatusBar());
-        callingWorld.removeObject(playerStats.getStatusBarLabel());
 
         resetEnemy(callingWorld);
 
@@ -194,8 +193,8 @@ public class WorldManager {
         
         World destination = worlds[currentRow][currentCol];        
         destination.addObject(callingWombat, spawnX, spawnY);
-        destination.addObject(playerStats.getStatusBar(), 40, 10);
-        destination.addObject(playerStats.getStatusBarLabel(), 25, 10);
+
+        playerStats.addStatusBarToWorld(destination);
 
         Greenfoot.setWorld(destination);
     }

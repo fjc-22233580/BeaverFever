@@ -1,4 +1,7 @@
+import java.awt.Point;
+
 import greenfoot.Color;
+import greenfoot.World;
 
 public class PlayerStats {
 
@@ -7,20 +10,30 @@ public class PlayerStats {
     private int woodCount = 0;    
     private int livesCount = 1;  
     private StatusBar statusBar = new StatusBar();
-    private Label statusBarLabel = new Label(woodCount, 12); 
+    private Label statusBarLabel = new Label("", 12); 
+    
+    private Point statusBarLocation = new Point(40, 10);
+    
     
     public PlayerStats() {
-
+        
         statusBarLabel.setFillColor(Color.BLACK);
         statusBarLabel.setLineColor(Label.transparent);
+
+        setFormattedLabelInfo();
     }
 
-    public Label getStatusBarLabel() {
-        return statusBarLabel;
+    public void addStatusBarToWorld(World world) {
+        world.addObject(statusBar, statusBarLocation.x, statusBarLocation.y);
+        world.addObject(statusBarLabel, statusBarLocation.x, statusBarLocation.y);
     }
 
-    public StatusBar getStatusBar() {
-        return statusBar;
+    private void setFormattedLabelInfo() {
+
+        // Set both wood and health on the same line,
+        // but add a space between them for the heart icon.
+        String output = woodCount + "         " + livesCount;
+        statusBarLabel.setValue(output);
     }
 
     public int getMAX_LIVES() {
@@ -29,20 +42,19 @@ public class PlayerStats {
 
     public void addWood() {
         woodCount++;
-        statusBarLabel.setValue(woodCount);
+        setFormattedLabelInfo();
         System.out.println("Wood count: " + woodCount); 
     }
 
-    public boolean canAddLife() {
-        
-        boolean canAddLife = false;
+    public boolean canAddLife() {        
 
         if (livesCount < MAX_LIVES) {
             livesCount++;
-            canAddLife = true;
+            setFormattedLabelInfo();
+            return true;
         }
 
-        return canAddLife;
+        return false;
     }
 
     public boolean decreaseLife() {
