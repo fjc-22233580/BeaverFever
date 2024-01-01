@@ -10,7 +10,7 @@ public class WorldManager {
     // #region TODO List:
 
         // Complete - 1. Add counter for health - currently only wood is reported.
-        // 2. Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
+        // WIP - 2. Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
         // builds a portion of the bridge with a small time - can be based off the game cycle iteration. 
         // Complete - 3. Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
         // 4. Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
