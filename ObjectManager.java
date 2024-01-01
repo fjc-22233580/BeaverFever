@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.util.List;
 
 import greenfoot.*;
@@ -27,6 +28,10 @@ public class ObjectManager {
     public void removeObject(Actor object) {
         this.currentObject = object;
         currentWorld.removeObject(object);
+    }
+
+    public void addBridgeTile(Point bridgeLocation) {
+        // TODO - Add Bridge Tile
     }
 
 }
