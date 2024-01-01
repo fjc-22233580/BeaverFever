@@ -100,7 +100,8 @@ public class WorldManager {
 
             Beaver beaver = new Beaver(objectManager, playerStats);
             
-            GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
+            boolean hasBridge = false;
+            GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0, hasBridge);
 
             
             maxX = firstWorld.getWidth();
@@ -118,7 +119,7 @@ public class WorldManager {
                         worlds[i][j] = firstWorld;
                     } else {
                         GreenfootImage  img = mapNumbers.get(worldIndex_1d);
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d); 
+                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d, hasBridge); 
                     }
                     
                     //System.out.print("(" + i + "," + j + " + " + imgIndex +")");                    
