@@ -38,7 +38,8 @@ public class WorldManager {
         // 6. Create "Bridge" artwork - needs to be same size as current game tiles.
         // 7. Create "Key" artwork - needs to be same size as current game tiles.
         // 8. Create button art work: "Play", "Dev Mode", "Restart"  - needs to be approx size that a button might be, like the thing we have now.
-        
+        // 9. OPTIONAL: Are there any fence tiles in the asset pack? If so, add them to rivers, and then with a gap, 
+        //    and a different tile for the "construction" point - more obvious of where player needs to stand to build the bridge.
 
         // Map Design:
 
