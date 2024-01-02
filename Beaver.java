@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.List;
 
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
@@ -149,7 +150,9 @@ public class Beaver extends Actor
 
         if (currentWorld.getHasBridge()) {
 
-            if (getX() == currentWorld.getConstructionLocation().x && getY() == currentWorld.getConstructionLocation().y) {
+
+            Rectangle constructionBoundBox = new Rectangle(getX(), getY(), getImage().getWidth(), getImage().getHeight());
+            if (constructionBoundBox.contains(currentWorld.getConstructionLocation())) {
                 
                 Actor waterTile = getOneObjectAtOffset(0, 16, WaterTile.class);
                 if (waterTile != null) {
