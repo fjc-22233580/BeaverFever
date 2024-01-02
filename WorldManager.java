@@ -9,17 +9,19 @@ public class WorldManager {
 
     // #region TODO List:
 
-        // Complete - 1. Add counter for health - currently only wood is reported.
-        // WIP - 2. Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
-        // builds a portion of the bridge with a small time - can be based off the game cycle iteration. 
-        // Complete - 3. Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
-        // WIP - 4. Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
+        // 1. Complete - Add counter for health - currently only wood is reported.
+        // 2. WIP - Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
+        //    builds a portion of the bridge with a small time - can be based off the game cycle iteration. 
+        // 3. Complete - Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
+        // 4. WIP - Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
         // 5. Add logic for reaching the princess, and goes to "Finish" screen.
-        // Needs Testing - 6. Add logic for running out of lives, and goes to "Game Over" screen.
+        // 6. Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
         // 7. Add comments to everything
         // 8. Review all code, any duplication?
-        // Complete - 9. Re-factor getNextPoint method
-        // 10. Increase rad of tree collection - large tree is partially missed. 
+        // 9. Complete - Re-factor getNextPoint method
+        // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
+        // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
+        // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
 
         // ArtWork:
         // 1. Create beaver chopping gif.
