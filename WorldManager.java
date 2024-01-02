@@ -22,6 +22,7 @@ public class WorldManager {
         // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
         // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
+        // 13. Pass the construction point to necessary worlds
 
         // ArtWork:
         // 1. Create beaver chopping gif.
