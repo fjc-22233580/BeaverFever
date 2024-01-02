@@ -24,7 +24,8 @@ public class WorldManager {
         // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
         // 13. Pass the construction point to necessary worlds
 
-        // ArtWork: (Note: all artwork must either be .png or .gif, have a transparent background, and be reasonably sized to work with the game )
+        // ArtWork: 
+        // (Note: all artwork must either be .png or .gif, have a transparent background, and be reasonably sized to work with the game )
         // 1. Create beaver chopping gif - an axe already exists in the asset pack, suggest combining that with current beaver image to create a gif. 
         // 2. Create the enemy attacking gif.
         // 3. Create Title screen artwork  = Game name and key controls.
@@ -33,6 +34,11 @@ public class WorldManager {
         // 6. Create "Bridge" artwork - needs to be same size as current game tiles.
         // 7. Create "Key" artwork - needs to be same size as current game tiles.
         // 8. Create button art work: "Play", "Dev Mode", "Restart"  - needs to be approx size that a button might be, like the thing we have now.
+
+        // Map Design:
+        // 1. Tweak river path in map 7 to have a more horizontal portion - this will help coding the bridge building logic.
+        // 2. Move trees in all maps so they are closer to the sides - this will help with the enemy patrol path logic. 
+        // 3. BUG - I think map 4 has a berry tile which has been incorrectly assigned as a tree tile - double check IDs in .csv files
 
     // #endregion
 
