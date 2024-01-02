@@ -29,7 +29,8 @@ public class WorldManager {
         // 5. Create "Game Over" screen artwork.
         // 6. Create "Bridge" artwork.
         // 7. Create "Key" artwork.
-        // 8. Create button art work: "Play", "Dev Mode"    
+        // 8. Create button art work: "Play", "Dev Mode"   
+        // 9. Create Restart button artwork.
 
     // #endregion
 
