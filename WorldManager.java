@@ -24,16 +24,15 @@ public class WorldManager {
         // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
         // 13. Pass the construction point to necessary worlds
 
-        // ArtWork:
-        // 1. Create beaver chopping gif.
+        // ArtWork: (Note: all artwork must either be .png or .gif, have a transparent background, and be reasonably sized to work with the game )
+        // 1. Create beaver chopping gif - an axe already exists in the asset pack, suggest combining that with current beaver image to create a gif. 
         // 2. Create the enemy attacking gif.
-        // 3. Create Title screen artwork - inc. key controls.
-        // 4. Create "Finish" screen artwork.
-        // 5. Create "Game Over" screen artwork.
-        // 6. Create "Bridge" artwork.
-        // 7. Create "Key" artwork.
-        // 8. Create button art work: "Play", "Dev Mode"   
-        // 9. Create Restart button artwork.
+        // 3. Create Title screen artwork  = Game name and key controls.
+        // 4. Create "Game over, you win" screen artwork.
+        // 5. Create "Game Overm you lose" screen artwork.
+        // 6. Create "Bridge" artwork - needs to be same size as current game tiles.
+        // 7. Create "Key" artwork - needs to be same size as current game tiles.
+        // 8. Create button art work: "Play", "Dev Mode", "Restart"  - needs to be approx size that a button might be, like the thing we have now.
 
     // #endregion
 
