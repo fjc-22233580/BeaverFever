@@ -215,6 +215,7 @@ public class Beaver extends Actor
 
         if (playerStats.decreaseLife()) {
             System.out.println("You died!");
+            worldManager.loseGame();
         } else {
             System.out.println("Health decreased!");
         }
