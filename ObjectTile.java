@@ -6,28 +6,20 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class ObjectTile extends Actor
-{
-    private ActorType type;
+public class ObjectTile extends BaseTile{
 
     public ObjectTile(String tilePath, ActorType type) {
-        
-        this.type = type;
-        GreenfootImage tile = new GreenfootImage(tilePath);
-        setImage(tile);
+        super(tilePath, ActorType.OTHER);
     }
 
     /**
      * Act - do whatever the ObjectTile wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    public void act()
+    @Override
+    public  void act()
     {
         // Add your action code here.
-    }
-
-    public ActorType getType() {
-        return type;
     }
 
 }

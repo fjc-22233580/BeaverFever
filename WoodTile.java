@@ -6,11 +6,10 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class WoodTile extends Actor
+public class WoodTile extends BaseTile
 {
-    public WoodTile(String tilePath) {
-        GreenfootImage tile = new GreenfootImage(tilePath);
-        setImage(tile);
+    public WoodTile(String tilePath, ActorType type) {
+        super(tilePath, type);
     }
     /**
      * Act - do whatever the WoodTile wants to do. This method is called whenever

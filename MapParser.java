@@ -84,27 +84,15 @@ public class MapParser {
             for (int y = 0; y < TILE_ROWS; y++) {
 
                 TileInfo currenTile = currentMapTiles[x][y];
+                TileFactory tileFactory = new TileFactory();
                 
                 if (currenTile != null) {  
 
                     ActorType type = currenTile.getActorType();
-                    switch (type) {
-                        case BERRY:
-                            currentWorld.addObject(new BerryTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
-                            break;
 
-                        case WOOD:
-                            currentWorld.addObject(new WoodTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
-                            break;
-
-                        case WATER:
-                            currentWorld.addObject(new WaterTile(currenTile.getTilePath()), currenTile.getX(), currenTile.getY());
-                            break;
-
-                        case OTHER:
-                            currentWorld.addObject(new ObjectTile(currenTile.getTilePath(), currenTile.getActorType()), currenTile.getX(), currenTile.getY());
-                            break;
-                    }
+                    BaseTile tile = tileFactory.createTile(currenTile.getTilePath(), type);
+                    currentWorld.addObject(tile, currenTile.getX(), currenTile.getY());
+                   
                 }
             }
         }
