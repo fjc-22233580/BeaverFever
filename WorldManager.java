@@ -25,6 +25,7 @@ public class WorldManager {
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
         // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
         // 13. Pass the construction point to necessary worlds
+        // 14. COMPLETE - Made factory for tiles and introced base class
 
 
         // ArtWork: 
