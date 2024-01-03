@@ -104,9 +104,9 @@ public class Beaver extends Actor
     public void setBeingAttacked(boolean isBeingAttacked) {
 
         if (isBeingAttacked) {
-            currentState = BeaverState.RX_DAMAGE;
+            currentState = BeaverState.RX_ATTACK;        
         } else {
-            currentState = BeaverState.MOVING;
+            currentState = BeaverState.RX_DAMAGE;            
         }
     }
 
@@ -127,6 +127,9 @@ public class Beaver extends Actor
             case CHOPPING:
                 chopping();
                 break;
+            case RX_ATTACK:
+                recieveAttack();
+                break;
             case RX_DAMAGE:
                 receiveDamage();
                 break;
@@ -144,21 +147,22 @@ public class Beaver extends Actor
         }
     }
 
+    
     private void buildBridge() {
         // TODO - Add logic to build bridge
         // TODO - Rename world getter to something more appropriate.
-
+        
         if (currentWorld.getHasBridge()) {
 
-
+            
             Rectangle constructionBoundBox = new Rectangle(getX(), getY(), getImage().getWidth(), getImage().getHeight());
             if (constructionBoundBox.contains(currentWorld.getConstructionLocation())) {
                 
                 Actor waterTile = getOneObjectAtOffset(0, 16, WaterTile.class);
                 if (waterTile != null) {
-
+                    
                     System.out.println("Found water tile!");
-
+                    
                     Point bridgeLocation = new Point(waterTile.getX(), waterTile.getY());
                     objectManager.removeObject(waterTile);
                     objectManager.addBridgeTile(bridgeLocation);
@@ -166,56 +170,60 @@ public class Beaver extends Actor
             }            
         }
     }
-
+    
     private void collectKey() {
-
+        
         Actor key = getOneIntersectingObject(Key.class);
         if (key != null) {
             objectManager.removeObject(key);
             playerStats.collectKey();
             System.out.println("Key collected!");
         }
-
+        
         currentState = BeaverState.MOVING;
     }
-
+    
     private void chopping() {
-
+        
         // TODO - Add chopping gif to start here and end once inside below if statement.
         System.out.println("Collecting wood.");
-
+        
         if (woodChoppingTimeCounter > MAX_CHOPPING_TIME) {
-
+            
             System.out.println("Finished Collecting.");
-
+            
             // Remove selected wood tiles from the world.
             objectManager.removeObjects(currentTree);
             
             // Add wood to the player stats.
             playerStats.addWood();
-
+            
             // Reset the state and time.
             currentState = BeaverState.MOVING;
             woodChoppingTimeCounter = 0;
         }
-
+        
         woodChoppingTimeCounter++;
     }
-
-
+    
+    
     private void collectHealth() {
-
+        
         if (playerStats.canAddLife()) {
             System.out.println("Health added!");
             Actor healthTiles = getOneIntersectingObject(BerryTile.class);
             objectManager.removeObject(healthTiles);
         }
-
+        
         currentState = BeaverState.MOVING;
     }
 
+    private void recieveAttack() {
+        // Any code needed whilst being attacked, currently just to 
+    }
+    
     private void receiveDamage() {
-
+        
         if (playerStats.decreaseLife()) {
             System.out.println("You died!");
             worldManager.loseGame();
@@ -224,19 +232,19 @@ public class Beaver extends Actor
         }
         currentState = BeaverState.MOVING;
     }
-
-
+    
+    
     private void handleMovement() {
-
+        
         if (buildingKeyDown != Greenfoot.isKeyDown("b")) {
             
             buildingKeyDown = !buildingKeyDown;
-
+            
             if (buildingKeyDown) {
                 currentState = BeaverState.BRIDGE_BUILDING;
             }
         }
-
+        
         if (isTouching(Key.class)) {
             System.out.println("Key found!");
             currentState = BeaverState.RX_KEY;

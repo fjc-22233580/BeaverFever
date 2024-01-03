@@ -91,13 +91,12 @@ public class Enemy extends Actor
         // Set the initial state
         state = EnemyState.PATROLLING;
     }
-
+    
     /**
      * Act - do whatever the Enemy wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    public void act()
-    {
+    public void act() {
         updateState();
     }
 
@@ -130,6 +129,7 @@ public class Enemy extends Actor
             if (attackCounter > ATTACK_DELAY) {
                 attackCounter = 0;
                 canAttack = true;
+                System.out.println("Attack period reset");
             }
         }
     }
