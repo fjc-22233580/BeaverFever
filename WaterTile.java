@@ -6,11 +6,10 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class WaterTile extends Actor
+public class WaterTile extends BaseTile
 {
-    public WaterTile(String tilePath) {
-        GreenfootImage tile = new GreenfootImage(tilePath);
-        setImage(tile);
+    public WaterTile(String tilePath, ActorType type) {
+       super(tilePath, type);
     }
     /**
      * Act - do whatever the WaterTile wants to do. This method is called whenever

@@ -6,12 +6,11 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class BerryTile extends Actor
+public class BerryTile extends BaseTile
 {
 
-    public BerryTile(String tilePath) {
-        GreenfootImage tile = new GreenfootImage(tilePath);
-        setImage(tile);
+    public BerryTile(String tilePath, ActorType type) {
+        super(tilePath, type);
     }
 
     /**
