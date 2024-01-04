@@ -13,7 +13,7 @@ public class WorldManager {
 
         // 1. Complete - Add counter for health - currently only wood is reported.
         // 2. WIP - Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
-        //    builds a portion of the bridge with a small time - can be based off the game cycle iteration. 
+        //    builds a portion of the bridge with a small time - can be based off the game cycle iteration.
         // 3. Complete - Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
         // 4. WIP - Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
         // 5. Add logic for reaching the princess, and goes to "Finish" screen.
@@ -22,29 +22,30 @@ public class WorldManager {
         // 8. Review all code, any duplication?
         // 9. Complete - Re-factor getNextPoint method
         // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
-        // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
-        // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
+        // 11. BUG - Increase rad of tree collection - large tree is partially missed.
+        // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer?
         // 13. Pass the construction point to necessary worlds
         // 14. COMPLETE - Made factory for tiles and introced base class
 
 
-        // ArtWork: 
+        // ArtWork:
 
         // (Note: all artwork must either be .png or .gif, have a transparent background, and be reasonably sized to work with the game )
-        // 1. Create beaver chopping gif - an axe already exists in the asset pack, suggest combining that with current beaver image to create a gif. 
-        // 2. Create the enemy attacking gif.
-        // 3. Create Title screen artwork  = Game name and key controls.
-        // 4. Create "Game over, you win" screen artwork.
-        // 5. Create "Game Overm you lose" screen artwork.
-        // 6. Create "Bridge" artwork - needs to be same size as current game tiles.
-        // 7. Create "Key" artwork - needs to be same size as current game tiles.
-        // 8. Create button art work: "Play", "Dev Mode", "Restart"  - needs to be approx size that a button might be, like the thing we have now.
-        // 9. Add walkway tile in front both rivers to know where the user needs to stand to build a bridge.
+        // 1. Create beaver chopping gif - an axe already exists in the asset pack, suggest combining that with current beaver image to create a gif.
+        // 2. Create the enemy attacking gif. 
+        // 3. Create Title screen artwork  = Game name and key controls. Done
+        // 4. Create "Game over, you win" screen artwork. Done
+        // 5. Create "Game Overm you lose" screen artwork. Done
+        // 6. Create "Bridge" artwork - needs to be same size as current game tiles. Done but size 15/13
+        // 7. Create "Key" artwork - needs to be same size as current game tiles. done
+        // 8. Create button art work: "Play", "Dev Mode", "Restart"  - needs to be approx size that a button might be, like the thing we have now. Done "start", "restart", "options"
+        // 9. OPTIONAL: Are there any fence tiles in the asset pack? If so, add them to rivers, and then with a gap,
+        //    and a different tile for the "construction" point - more obvious of where player needs to stand to build the bridge.
 
-        // Map Design:
+        // Map Design: Done latest update as off 22:34 on 3rd
 
         // 1. Tweak river path in map 7 to have a more horizontal portion - this will help coding the bridge building logic.
-        // 2. Move trees in all maps so they are closer to the sides - this will help with the enemy patrol path logic. 
+        // 2. Move trees in all maps so they are closer to the sides - this will help with the enemy patrol path logic.
         // 3. BUG - I think map 4 has a berry tile which has been incorrectly assigned as a tree tile - double check IDs in .csv files
 
     // #endregion
