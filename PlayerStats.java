@@ -59,9 +59,19 @@ public class PlayerStats {
         return false;
     }
     
+    /**
+     * Decreases the life count of the player.
+     * Updates the label displaying the life count.
+     * 
+     * @return true if the life count reaches 0, false otherwise.
+     */
     public boolean decreaseLife() {
-        livesCount--;
         
+        // Decrease the life count and update the label.
+        livesCount--;
+        setFormattedLabelInfo();
+
+        // If the lives count is 0, return true.
         if (livesCount <= 0) {
             livesCount = 0;
             return true;
