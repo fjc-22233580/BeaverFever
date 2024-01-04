@@ -10,15 +10,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.lang.model.util.ElementScanner14;
+
 import greenfoot.World;
 
 public class MapParser {
 
+    // 
     private final int ROWS = 3;
     private final int COLS = 3;
     
-    private HashMap<Integer, String> tileImagesList;
-    private List<String> mapCSVList;
+    /**
+     * A dictionary of all tile images. Key is the tile ID, value is the path to the image.
+     */
+    private HashMap<Integer, String> tileImagesList = new HashMap<>();
+
+    private List<String> mapTilesList = new ArrayList<>();
 
     private boolean isImportComplete;
 
@@ -42,13 +50,14 @@ public class MapParser {
         try {
 
             getTileIDs("actortypes");
-            mapCSVList = getMapFiles("griddata");
-            tileImagesList = getTileImagePaths("images\\tiles");
+            getMapFiles("griddata");
+            getTileImagePaths("images\\tiles");
             isImportComplete = true;
 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {            
+            System.err.println("Error!");
+            System.err.println(e.getMessage());
+            throw new UnknownError();
         }
 
         if (isImportComplete) {
@@ -66,7 +75,7 @@ public class MapParser {
 
                 World world = worlds[i][j];
 
-                String currentMap = mapCSVList.get(index_1d);
+                String currentMap = mapTilesList.get(index_1d);
                 TileInfo[][] currentMapTiles = parseMapData(currentMap);
 
                 populateMap(world, currentMapTiles);                
@@ -80,19 +89,22 @@ public class MapParser {
         final int TILE_COLS = 15;
         final int TILE_ROWS = 15;
 
+        TileFactory tileFactory = new TileFactory();
+
         for (int x = 0; x < TILE_COLS; x++) {
             for (int y = 0; y < TILE_ROWS; y++) {
 
-                TileInfo currenTile = currentMapTiles[x][y];
-                TileFactory tileFactory = new TileFactory();
-                
+                // Check if we have a tile, null means no tile at this location,
+                // so we can skip it. (This means that -1 in the CSV)
+                TileInfo currenTile = currentMapTiles[x][y];                
                 if (currenTile != null) {  
 
+                    // Get the actor type and create the tile
                     ActorType type = currenTile.getActorType();
-
                     BaseTile tile = tileFactory.createTile(currenTile.getTilePath(), type);
-                    currentWorld.addObject(tile, currenTile.getX(), currenTile.getY());
-                   
+
+                    // Add the appropriate tile to the world
+                    currentWorld.addObject(tile, currenTile.getX(), currenTile.getY());                   
                 }
             }
         }
@@ -159,6 +171,12 @@ public class MapParser {
         return grid;
     }
 
+    /**
+     * Returns the type of actor based on the given tile ID.
+     * Checks from any of te list of tile IDs.
+     * @param tileID the ID of the tile
+     * @return the type of actor associated with the tile ID
+     */
     private ActorType getActorType(int tileID){
 
         if (berryTileIDs.contains(tileID)) {
@@ -172,8 +190,16 @@ public class MapParser {
         return ActorType.OTHER;
     }
 
+    /**
+     * Gets tile IDs from the relevent CSV in the actor types folder.
+     * The tile IDs are stored in separate lists based on the column header in the CSV file.
+     * If no tile IDs are found, an IllegalArgumentException is thrown.
+     *
+     * @param actorTypesFolderPath the path to the actor types folder
+     * @throws FileNotFoundException if the specified folder or file is not found
+     * @throws IOException if an I/O error occurs while reading the files
+     */
     private void getTileIDs(String actorTypesFolderPath) throws FileNotFoundException, IOException {
-
         
         // Get all files from this folder.
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(actorTypesFolderPath))) {
@@ -226,81 +252,103 @@ public class MapParser {
                                 System.err.println("Invalid Column Header!" + headerName);
                             }
                         }
-                    } else {
-                        System.err.println("Invalid File Type!");
-                        throw new IllegalArgumentException();
                     }
                 }
             }
         }
 
-        System.out.println("Imported IDs wood: " + woodTileIDs.size() + " | ");
-        System.out.println("Imported IDs berry: " + berryTileIDs.size() + " | ");
-        System.out.println("Imported IDs water: " + waterTileIDs.size() + " | ");
+        if (woodTileIDs.size() > 0 || berryTileIDs.size() > 0 || waterTileIDs.size() > 0) {
+
+            System.out.println("Imported IDs wood: " + woodTileIDs.size() + " | ");
+            System.out.println("Imported IDs berry: " + berryTileIDs.size() + " | ");
+            System.out.println("Imported IDs water: " + waterTileIDs.size() + " | ");
+        }else{
+            System.err.println("No tile IDs found!");
+            throw new IllegalArgumentException();  
+        }
     }
 
-    private List<String> getMapFiles(String mapFilesPath) throws IOException {
-
-        List<String> csvPaths = new ArrayList<String>();
-
+    /**
+     * Retrieves the list of map csv files from the "griddata" folder.
+     * If the number of map files is not equal to 9, an exception is thrown.
+     * If no map files are found, an exception is thrown.
+     *
+     * @param mapFilesPath the path to the directory containing the map files
+     * @throws IOException if an I/O error occurs while accessing the directory
+     * @throws FileNotFoundException if the specified folder or file is not found
+     * @throws IllegalArgumentException if the number of map files is incorrect or no map files are found
+     */
+    private void getMapFiles(String mapFilesPath) throws FileNotFoundException, IOException {
+        
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(mapFilesPath))) {
 
             for (Path path : stream) {
 
+                // Check we have a file
                 if (Files.isDirectory(path) == false) {
 
+                    // Check file is a .csv
                     String fileName = path.toString();
-
                     if (HelperMethods.getFileExtension(fileName).equals(".csv")) {
-                        csvPaths.add(fileName);
+                        mapTilesList.add(fileName);
                     }
                 }
             }
         }
 
-        System.out.println("Imported CSVs: " + csvPaths.size());
-
-        return csvPaths;
-
+        // Check we have the correct number of maps
+        if (mapTilesList.size() > 0) {
+            
+            if (mapTilesList.size() != 9) {
+                System.err.println("Incorrect number of maps!");
+                throw new IllegalArgumentException();                
+            }
+            System.out.println("Imported CSVs: " + mapTilesList.size());
+        } else {
+            System.err.println("No CSVs found!");
+            throw new IllegalArgumentException();
+        }
     }
 
     /** Gets all tile images (.png) from images\tiles and puts them into a Dictionary for quick retrieval.
+     * Also removes "images\\" from the path as GreenfootImage will add this automatically(!);
      * @param imageTilesPath images\tiles
-     * @return HashMap of all tiles
      * @throws IOException throws for generic IO Exception
+     * @throws FileNotFoundException if the specified folder or file is not found
      */
-    private HashMap<Integer, String> getTileImagePaths(String imageTilesPath) throws IOException {
-
-        HashMap<Integer, String> imgPaths = new HashMap<Integer, String>();
+    private void getTileImagePaths(String imageTilesPath) throws FileNotFoundException, IOException {        
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(imageTilesPath))) {
 
             for (Path path : stream) {
 
+                // Check we have a file
                 if (Files.isDirectory(path) == false) {
 
+                    // Check file is a .png
                     String filePath = path.getFileName().toString();
-
                     if (HelperMethods.getFileExtension(filePath).equalsIgnoreCase(".png")) {
 
+                        // TODO - Reduce complexity of this method
                         File file = new File(filePath);
-
                         String fileName = HelperMethods.getFileName(file);
-
                         int fileNumber = Integer.parseInt(fileName);
 
                         // Remove "images\\" because for reasons unkown greenfoot hardcoded that folder when creating GreenfootImage
                         String tilePathString = path.toString().replace("images\\", "");
 
-                        imgPaths.put(fileNumber, tilePathString);
-                    }
+                        tileImagesList.put(fileNumber, tilePathString);
+                    } 
                 }
             }
         }
 
-        System.out.println("Imported tiles: " + imgPaths.size());
-
-        return imgPaths;
+        if (tileImagesList.size() > 0) {
+            System.out.println("Imported tiles: " + tileImagesList.size());
+        }else{
+            System.err.println("No tile images found!");
+            throw new IllegalArgumentException();            
+        }
     }
 
 }
