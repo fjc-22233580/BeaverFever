@@ -17,11 +17,12 @@ public class FinishScreen extends World {
 
 
         if (win) {
-            Label label = new Label("YOU WIN!", 32);
-            addObject(label, 120, 120);
+            GreenfootImage winimage = new GreenfootImage("game complete page.png");
+            setBackground(winimage);
+
         } else {
-            Label label = new Label("YOU LOSE!", 32);
-            addObject(label, 120, 120);
+            GreenfootImage loseimage = new GreenfootImage("Game over screen.png");
+            setBackground(loseimage);
         }
     
         // TODO - Add a button to restart the game
