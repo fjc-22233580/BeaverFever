@@ -10,8 +10,7 @@ import java.util.List;
  * @version (a version number or a date)
  */
 public class Enemy extends Actor
-{
-    
+{    
     /**
      * The velocity of the enemy.
      * Set as 2 pixels per frame.
@@ -26,9 +25,11 @@ public class Enemy extends Actor
     private final int ATTACK_DELAY = 120; 
 
     //#region Radii for detection, chasing and attacking
+
     private final int DETECTION_RADIUS = 60;
     private final int CHASING_RADIUS = 50;
     private final int ATTACKING_RADIUS = 30;
+
     //#endregion
 
     /**
@@ -60,7 +61,7 @@ public class Enemy extends Actor
      * The destination point that the enemy is moving towards.
      */
     private Point destinationPoint = new Point();
-
+    
     /**
      * The initial location of the enemy, when it is added to the world.
      */
@@ -72,19 +73,30 @@ public class Enemy extends Actor
      * and is reset using the resetAttacklessPeriod method based on the ATTACK_DELAY.
      */
     private boolean canAttack = true;
+    
+    /**
+     * A counter to keep track of the number of frames since the last attack,
+     * whilst this is counting up, the enemy cannot attack.
+     */
+    private int attacklessCounter = 0;
 
+     /**
+     * Constructs an enemy with the given path points and initial location (this is used to reset the enemy position).    
+     * @param pathPoints the list of points representing the path that the enemy will follow
+     * @param initialLocationPoint the initial location of the enemy
+     * @throws IllegalArgumentException if the pathPoints list is empty or contains less than two points
+     */
+    public Enemy(List<Point> pathPoints, Point initialLocationPoint) {
 
-    public Enemy(List<Point> pathPoints, Point initialLocatiPoint) {
-        
         if (pathPoints.size() <= 0) {
-            System.err.println("Error: pathPoints must contain at least one point");
+            System.err.println("Error: pathPoints must contain two points or more.");
             throw new IllegalArgumentException();
         }
-        
-        this.pathPoints = pathPoints;
-        this.initialLocation = initialLocatiPoint;
 
-        // Set the wolverine image. 
+        this.pathPoints = pathPoints;
+        this.initialLocation = initialLocationPoint;
+
+        // Set the wolverine image.
         GreenfootImage image = new GreenfootImage("wolverine.png");
         setImage(image);
 
@@ -93,15 +105,12 @@ public class Enemy extends Actor
     }
     
     /**
-     * Act - do whatever the Enemy wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * Act method - called by Greenfoot every 16ms.
+     * Used to control which state the enemy should go into.
      */
     public void act() {
-        updateState();
-    }
 
-    private void updateState(){
-        switch (state){
+        switch (state) {
             case PATROLLING:
                 patrol();
                 break;
@@ -119,40 +128,48 @@ public class Enemy extends Actor
         resetAttacklessPeriod();
     }
 
-    private int attackCounter = 0;
     
+    /**
+     * Resets the attackless period for the enemy.
+     * The enemy cannot attack whilst the attackless period is counting up.
+     */
     private void resetAttacklessPeriod() {
 
         if (!canAttack) {
 
-            attackCounter++;
-            if (attackCounter > ATTACK_DELAY) {
-                attackCounter = 0;
+            attacklessCounter++;
+            if (attacklessCounter > ATTACK_DELAY) {
+                attacklessCounter = 0;
                 canAttack = true;
                 System.out.println("Attack period reset");
             }
         }
     }
 
+    /**
+     * Moves the enemy back to the nearest point in the patrol path and resumes patrolling.
+     */
     private void returning() {
 
+        // Get the nearest point in the path to us.
         Point currentLocation = new Point(getX(), getY());
-
         destinationPoint = EuclideanFunctions.getNearestPoint(pathPoints, currentLocation);
         
         // Set the location index to the nearest point, so patrolling can continue from there
         locationIndex = pathPoints.indexOf(destinationPoint);
         
-        state = EnemyState.PATROLLING;
         Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, destinationPoint, VELOCITY);
-        collisionSetLocation(nextPoint.x, nextPoint.y);
-
+        collisionSetLocation(nextPoint);
+        state = EnemyState.PATROLLING;
     }
 
-    // TODO - To be removed
+    // TODO - Rename once we know how long to delay.
     private int delayCounter = 0;
 
-
+    /**
+     * The enemy attacking method, which is called when the enemy is in the ATTACKING state.
+     * Sets the player to being attacked, and then returns to the RETURNING state after a delay.
+     */
     private void attacking() {
 
         player.setBeingAttacked(true);
@@ -169,6 +186,11 @@ public class Enemy extends Actor
         delayCounter++;
     }
     
+    /**
+     * Performs the chasing behavior of the enemy.
+     * The enemy moves towards the player if within a certain radius and attacks if within attacking radius.
+     * If the player is outside the chasing radius, the enemy returns to its original position, and resumes patrolling.
+     */
     private void chasing() {
 
         Point currentLocation = new Point(getX(), getY());            
@@ -178,7 +200,7 @@ public class Enemy extends Actor
         if (chasingDistance < CHASING_RADIUS && canAttack) {            
 
             Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, playerLocation, VELOCITY);
-            collisionSetLocation(nextPoint.x, nextPoint.y);
+            collisionSetLocation(nextPoint);
 
             double attackingDistance = EuclideanFunctions.getDistance(currentLocation, playerLocation);
             if (attackingDistance < ATTACKING_RADIUS) {
@@ -191,36 +213,52 @@ public class Enemy extends Actor
     }
 
   
+    /**
+     * Moves the enemy character along a predefined path, patrolling the area.
+     * If the enemy reaches its destination point, it updates the destination point
+     * to the next point in the path.
+     * If the enemy detects the player, it changes its state to chasing.
+     */
     private void patrol() {
 
         int currentIndex = 0;
-
         Point currentPoint = new Point(getX(), getY());
 
+        // Check if we have reached the destination point.
+        // A bounding box was used to check if the current point is within the destination point, 
+        // otherwise if the velocity is too high, the enemy will skip over the destination point.
         Rectangle destinationBoundBox = new Rectangle(destinationPoint.x - 2, destinationPoint.y - 2, 4, 4);
         if (destinationBoundBox.contains(currentPoint)) {
 
             currentIndex = pathPoints.indexOf(destinationPoint);
 
+            // Only update to the next point if we're on the current point in the path.
             if (locationIndex == currentIndex) {
 
+                // If we have reached the end of the path, then go back to the start.
                 locationIndex = (locationIndex + 1) % pathPoints.size();
-
                 destinationPoint = pathPoints.get(locationIndex);
             }
         }
 
+        // Get the next point based on the VELOCITY, torwards the destination point.
         destinationPoint = pathPoints.get(locationIndex);
         Point nextPoint = EuclideanFunctions.getNextPoint(currentPoint, destinationPoint, VELOCITY);
 
-        collisionSetLocation(nextPoint.x, nextPoint.y);
+        // Move the enemy to the next point, and check for collisions.
+        collisionSetLocation(nextPoint);
 
+        // Check if the player is within the detection radius.
         if (detectPlayer()) {
             state = EnemyState.CHASING;
         }
-
     }
 
+    /**
+     * Detects the player if its within a certain radius.
+     * If we find the player, then cache the reference to the player.
+     * @return true if the player is detected, false otherwise
+     */
     private boolean detectPlayer(){
 
         List<Beaver> wombats = getObjectsInRange(DETECTION_RADIUS, Beaver.class); 
@@ -231,25 +269,31 @@ public class Enemy extends Actor
             return true;
         }
         return false;
-    }
-    
+    }    
 
-    public boolean collisionSetLocation(final int x, final int y) {
+    /**
+     * Sets the location of the enemy, and checks for collisions with objects.
+     * If a collision is detected, then the enemy is reverted to its previous position.
+     * @param location the location to set the enemy to.
+     */
+    private void collisionSetLocation(final Point location) {
         final int oldX = getX();
         final int oldY = getY();
-        setLocation(x, y);
+        setLocation(location.x, location.y);
 
+        // Check for collisions with objects.
         if (isTouching(ObjectTile.class) || isTouching(WoodTile.class) || isTouching(WaterTile.class) || isTouching(Beaver.class)) {
 
             // Collided with an object, so revert to previous position.
             setLocation(oldX, oldY);
-            return false; // move was not allowed!
         }
-
-        return true; // move was allowed!
     }
 
-    public void reset() {
+    /**
+     * Resets the enemy's state and location to its initial point,
+     * called externally when the player switches worlds.
+     */
+    public void resetEnemyPosition() {
 
         locationIndex = 0;
         destinationPoint = pathPoints.get(locationIndex);
