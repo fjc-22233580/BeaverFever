@@ -6,6 +6,8 @@ import greenfoot.*; // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Key extends Actor {
 
     public Key() {
+        GreenfootImage newkeyv4 = new GreenfootImage("new key v4.png");
+        setImage(newkeyv4);
     }
 
     /**
@@ -13,6 +15,6 @@ public class Key extends Actor {
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     public void act() {
-        // Add your action code here.
+
     }
 }
