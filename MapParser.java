@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.lang.model.util.ElementScanner14;
-
 import greenfoot.World;
 
 public class MapParser {
@@ -35,6 +33,7 @@ public class MapParser {
     private List<Integer> woodTileIDs = new ArrayList<>();
     private List<Integer> berryTileIDs = new ArrayList<>();
     private List<Integer> waterTileIDs = new ArrayList<>();
+    private List<Integer> walkWayTiles = new ArrayList<>();
 
     public MapParser(World[][] worlds) {
 
@@ -185,7 +184,9 @@ public class MapParser {
             return ActorType.WOOD;
         } else if (waterTileIDs.contains(tileID)) {
             return ActorType.WATER;
-        } 
+        } else if (walkWayTiles.contains(tileID)) {
+            return ActorType.WALKWAY;
+        } else 
 
         return ActorType.OTHER;
     }
@@ -246,6 +247,10 @@ public class MapParser {
                             } else if (headerName.contains("water")) {
 
                                 waterTileIDs = new ArrayList<>(values);
+
+                            } else if (headerName.contains("walkway")) {
+
+                                walkWayTiles = new ArrayList<>(values);
                                 
                             } else{
 
@@ -257,11 +262,12 @@ public class MapParser {
             }
         }
 
-        if (woodTileIDs.size() > 0 || berryTileIDs.size() > 0 || waterTileIDs.size() > 0) {
+        if (woodTileIDs.size() > 0 || berryTileIDs.size() > 0 || waterTileIDs.size() > 0 || walkWayTiles.size() > 0) {
 
-            System.out.println("Imported IDs wood: " + woodTileIDs.size() + " | ");
-            System.out.println("Imported IDs berry: " + berryTileIDs.size() + " | ");
-            System.out.println("Imported IDs water: " + waterTileIDs.size() + " | ");
+            System.out.println("Imported IDs wood: " + woodTileIDs.size());
+            System.out.println("Imported IDs berry: " + berryTileIDs.size());
+            System.out.println("Imported IDs water: " + waterTileIDs.size());
+            System.out.println("Imported IDs walkway: " + walkWayTiles.size());
         }else{
             System.err.println("No tile IDs found!");
             throw new IllegalArgumentException();  
