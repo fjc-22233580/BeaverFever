@@ -17,13 +17,13 @@ public class WorldManager {
         // 3. Complete - Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
         // 4. WIP - Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
         // 5. Add logic for reaching the princess, and goes to "Finish" screen.
-        // 6. Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
+        // 6. COMPLETE - Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
         // 7. Add comments to everything
         // 8. Review all code, any duplication?
         // 9. Complete - Re-factor getNextPoint method
         // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
-        // 11. BUG - Increase rad of tree collection - large tree is partially missed.
-        // 12. BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer?
+        // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
+        // 12. OPTIONAL - BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
         // 13. Pass the construction point to necessary worlds
         // 14. COMPLETE - Made factory for tiles and introced base class
 
@@ -154,11 +154,26 @@ public class WorldManager {
             playerStats.addStatusBarToWorld(firstWorld);           
 
             if(isDevMode == false) {
+                setBridgeMaps();
                 addEnemies();
+                addKey();
             }
             
             isInitialised = true;
         }
+    }
+
+    private void setBridgeMaps() {
+            
+        GameMap map = (GameMap)worlds[2][0];
+        map.setHasBridge(true);
+    }
+
+    private void addKey() {
+
+        Point keyPoint = new Point(58,197);
+        Key key = new Key();
+        worlds[2][0].addObject(key, keyPoint.x, keyPoint.y);
     }
 
     private void addEnemies() {
@@ -236,7 +251,7 @@ public class WorldManager {
 
         if (enemies.size() > 0) {
             Enemy enemy = enemies.get(0);
-            enemy.reset();            
+            enemy.resetEnemyPosition();            
         }        
     }
 }
