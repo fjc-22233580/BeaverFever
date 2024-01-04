@@ -1,13 +1,10 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.*; // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class ObjectTile here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Represents a water tile in the game.
+ * Extends the BaseTile class.
  */
-public class ObjectTile extends BaseTile{
-
+public class ObjectTile extends BaseTile {
     public ObjectTile(String tilePath, ActorType type) {
         super(tilePath, ActorType.OTHER);
     }
@@ -16,9 +13,7 @@ public class ObjectTile extends BaseTile{
      * Act - do whatever the ObjectTile wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    @Override
-    public  void act()
-    {
+    public void act() {
         // Add your action code here.
     }
 
