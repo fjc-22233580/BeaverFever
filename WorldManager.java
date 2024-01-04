@@ -19,7 +19,7 @@ public class WorldManager {
         // 5. Add logic for reaching the princess, and goes to "Finish" screen.
         // 6. COMPLETE - Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
         // 7. Add comments to everything
-        // 8. Review all code, any duplication?
+        // 8. WIP - Review all code, any duplication?
         // 9. Complete - Re-factor getNextPoint method
         // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
@@ -163,6 +163,8 @@ public class WorldManager {
         }
     }
 
+    //TODO - Remove this method when done, figured out how to know of bridge world?
+    //TODO - Actually just check on walkway tile? If so, remove stuff from GameMap
     private void setBridgeMaps() {
             
         GameMap map = (GameMap)worlds[2][0];
