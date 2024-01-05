@@ -22,7 +22,7 @@ public class WorldManager {
         // 7. Add comments to everything
         // 8. WIP - Review all code, any duplication?
         //// 9. Complete - Re-factor getNextPoint method
-        // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
+        //// 10. REMOVED - Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
         // 12. OPTIONAL - BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
         //// 13. Complete - Remove old code in GameMap for knowing it has a river, now based on WalkWay tile.
@@ -30,9 +30,9 @@ public class WorldManager {
         //// 15. Complete - Increase castle size slightly
         //// 16. Complete - Add gif chopping gif to beaver
         //// 17. Complete - Reset mechanism and currently broken from Greenfoot.
-        // 18. Optional - Add "Restart" button to "Game Over" screen.
-        // 19. Optional - Add "Restart" button to "Finish" screen.
-        // 20. Tweak stats bar to show key. 
+        //// 20. Complete Tweak stats bar to show key. 
+        // 21. Investigate bug where enemy goes to 0,0.
+        // 22. Add enemies to other maps. (x3?)
 
 
 
