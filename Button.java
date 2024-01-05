@@ -11,8 +11,8 @@ import greenfoot.GreenfootImage;
  */
 public class Button extends Actor
 {
-    public Button() {
-        GreenfootImage startbutton = new GreenfootImage("Start.png");
+    public Button(String imtPath) {
+        GreenfootImage startbutton = new GreenfootImage(imtPath);
         setImage(startbutton);
     }
     /**
