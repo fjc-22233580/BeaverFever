@@ -12,7 +12,7 @@ import greenfoot.GreenfootImage;
 public class Button extends Actor
 {
     public Button() {
-        GreenfootImage startbutton = new GreenfootImage("start button.png");
+        GreenfootImage startbutton = new GreenfootImage("Start.png");
         setImage(startbutton);
     }
     /**
