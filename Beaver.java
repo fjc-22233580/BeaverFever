@@ -27,7 +27,7 @@ public class Beaver extends Actor
     /**
      * The maximum time it takes to chop wood - expressed as game cycles per second.
      */
-    private final int MAX_CHOPPING_TIME = 120;
+    private final int MAX_CHOPPING_TIME = 90;
 
     /**
      * The minimum wood count required to build a bridge portion.     
@@ -80,7 +80,16 @@ public class Beaver extends Actor
      */
     private boolean buildingKeyDown = false;
 
+    /**
+     * The chopping gif for the Beaver.
+     */
+    private GifImage choppingGif = new GifImage("beaver_chop.gif");;
     
+    /**
+     * The default image for the Beaver.
+     */
+    private GreenfootImage defaultImage = new GreenfootImage("nugget_beaver.png");;
+
     /**
      * Represents a beaver in the game.
      * The beaver can move and has a current state. 
@@ -226,7 +235,7 @@ public class Beaver extends Actor
         
         woodChoppingTimeCounter++;
 
-        // TODO - Add chopping gif to start here and end once inside below if statement.
+        setImage(choppingGif.getCurrentImage());
         
         if (woodChoppingTimeCounter > MAX_CHOPPING_TIME) {
             
@@ -239,6 +248,7 @@ public class Beaver extends Actor
             playerStats.addWood();
             
             // Reset the state and time.
+            setImage(defaultImage);
             currentState = BeaverState.MOVING;
             woodChoppingTimeCounter = 0;
         }        
