@@ -234,8 +234,7 @@ public class WorldManager {
     }
 
     public void winGame() {
-
-        // TODO - Add princess and beaver to this world.
+        
         FinishScreen finishScreen = new FinishScreen(true);
         Greenfoot.setWorld(finishScreen);
     }
