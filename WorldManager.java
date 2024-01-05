@@ -16,8 +16,8 @@ public class WorldManager {
         //// 2. Complete - Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
         ////    builds a portion of the bridge with a small time - can be based off the game cycle iteration.
         //// 3. Complete - Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
-        // 4. WIP - Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
-        //* 5. Add logic for reaching the princess, and goes to "Finish" screen.
+        //// 4. Complete - Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
+        ///// 5. Complete -  Add logic for reaching the princess, and goes to "Finish" screen.
         //// 6. COMPLETE - Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
         // 7. Add comments to everything
         // 8. WIP - Review all code, any duplication?
@@ -25,8 +25,15 @@ public class WorldManager {
         // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
         // 12. OPTIONAL - BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
-        // 13. Remove old code in GameMap for knowing it has a river, now based on WalkWay tile.
+        //// 13. Complete - Remove old code in GameMap for knowing it has a river, now based on WalkWay tile.
         //// 14. COMPLETE - Made factory for tiles and introced base class
+        // 15. Increase castle size slightly
+        // 16. Add gif chopping gif to beaver
+        // 17. Optional - Reset mechanism and currently broken from Greenfoot.
+        // 18. Optional - Add "Restart" button to "Game Over" screen.
+        // 19. Optional - Add "Restart" button to "Finish" screen.
+        // 20. Tweak stats bar to show key. 
+
 
 
         // ArtWork:
@@ -45,9 +52,9 @@ public class WorldManager {
 
         // Map Design: Done latest update as off 22:34 on 3rd
 
-        // 1. Tweak river path in map 7 to have a more horizontal portion - this will help coding the bridge building logic.
-        // 2. Move trees in all maps so they are closer to the sides - this will help with the enemy patrol path logic.
-        // 3. BUG - I think map 4 has a berry tile which has been incorrectly assigned as a tree tile - double check IDs in .csv files
+        //// 1. Tweak river path in map 7 to have a more horizontal portion - this will help coding the bridge building logic.
+        //// 2. Move trees in all maps so they are closer to the sides - this will help with the enemy patrol path logic.
+        //// 3. BUG - I think map 4 has a berry tile which has been incorrectly assigned as a tree tile - double check IDs in .csv files
 
     // #endregion
 
