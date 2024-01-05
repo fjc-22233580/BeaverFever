@@ -28,7 +28,7 @@ public class WorldManager {
         //// 13. Complete - Remove old code in GameMap for knowing it has a river, now based on WalkWay tile.
         //// 14. COMPLETE - Made factory for tiles and introced base class
         // 15. Increase castle size slightly
-        // 16. Add gif chopping gif to beaver
+        //// 16. Complete - Add gif chopping gif to beaver
         // 17. Optional - Reset mechanism and currently broken from Greenfoot.
         // 18. Optional - Add "Restart" button to "Game Over" screen.
         // 19. Optional - Add "Restart" button to "Finish" screen.
