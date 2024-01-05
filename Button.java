@@ -1,4 +1,7 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+// (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.Actor;
+import greenfoot.Greenfoot;
+import greenfoot.GreenfootImage;
 
 /**
  * Write a description of class Button here.
@@ -8,6 +11,10 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Button extends Actor
 {
+    public Button() {
+        GreenfootImage startbutton = new GreenfootImage("start button.png");
+        setImage(startbutton);
+    }
     /**
      * Act - do whatever the Button wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.

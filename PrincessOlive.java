@@ -1,15 +1,16 @@
-import greenfoot.*;
+import greenfoot.Actor;
+import greenfoot.GreenfootImage;
 
 public class PrincessOlive extends Actor {
 
 
     public PrincessOlive() {
-        GreenfootImage image = new GreenfootImage("happyprincess.png");
+        GreenfootImage image = new GreenfootImage("Happyprincessv2.png");
         setImage(image);
     }
 
     public void winGame(){
-        GreenfootImage image = new GreenfootImage("sadprincess.png");
+        GreenfootImage image = new GreenfootImage("sadprincessv2.png");
         setImage(image);
     }
 
