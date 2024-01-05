@@ -30,8 +30,14 @@ public class ObjectManager {
         currentWorld.removeObject(object);
     }
 
-    public void addBridgeTile(Point bridgeLocation) {
-        // TODO - Add Bridge Tile
+    // TODO - Implement this method
+    public void replaceTile(Actor originalTile, Actor newTile) {
+        // TODO - Implement this method
+
+        Point originalTileLocation = new Point(originalTile.getX(), originalTile.getY());
+        currentWorld.removeObject(originalTile);
+        currentWorld.addObject(newTile, originalTileLocation.x, originalTileLocation.y);
+        
     }
 
 }

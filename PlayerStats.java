@@ -79,6 +79,11 @@ public class PlayerStats {
         
         return false;
     }
+
+    public void removeWood(int count){
+        woodCount -= count;
+        setFormattedLabelInfo();
+    }
     
     public int getWoodCount() {
         return woodCount;

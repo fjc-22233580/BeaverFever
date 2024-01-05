@@ -1,9 +1,6 @@
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.List;
 
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
 /**
  * Write a description of class Beaver here.
  * 
@@ -18,9 +15,24 @@ public class Beaver extends Actor
     private final int VELOCITY = 3;
 
     /**
+     * The radius to search for wood tiles around the beaver.
+     */
+    private final int WOOD_SEARCH_RADIUS = 25;
+
+    /**
+     * The radius to search for the whole tree once we've found a wood tile.
+     */
+    private final int TREE_SEARCH_RADIUS = 50;
+
+    /**
      * The maximum time it takes to chop wood - expressed as game cycles per second.
      */
     private final int MAX_CHOPPING_TIME = 120;
+
+    /**
+     * The minimum wood count required to build a bridge portion.     
+     */
+    private final int MIN_WOODCOUNT = 5;
     
     /**
      * Reference to the current world - used to determine when cross the edge of the world. 
@@ -67,7 +79,14 @@ public class Beaver extends Actor
      * Flag to determine if the building key is down - used to make sure the key is only pressed once.
      */
     private boolean buildingKeyDown = false;
+
     
+    /**
+     * Represents a beaver in the game.
+     * The beaver can move and has a current state. 
+     * @param objectManager the object manager for the game
+     * @param playerStats the player's statistics
+     */
     public Beaver(ObjectManager objectManager, PlayerStats playerStats) {
         this.objectManager = objectManager;
         this.playerStats = playerStats;
@@ -82,16 +101,14 @@ public class Beaver extends Actor
      * @param world the world to which the object is added
      */
     @Override
-    protected void addedToWorld(World world) {
-        // TODO Auto-generated method stub
+    protected void addedToWorld(World world) {        
         super.addedToWorld(world);
         
-        currentWorld = (GameMap)world;
+        // Cache the current world.
+        currentWorld = (GameMap)world;   
         
-        objectManager.setNewWorld(world);
-        
-        System.out.println("Player added to different world.");
-        
+        // Set the object manager's world to the current world.
+        objectManager.setNewWorld(world);        
     }
 
     /**
@@ -115,6 +132,8 @@ public class Beaver extends Actor
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     public void act() {
+
+        handleNonMovementInput();
 
         // Carry out various actions based on the current state.
         switch (currentState) {
@@ -148,29 +167,41 @@ public class Beaver extends Actor
     }
 
     
+    /**
+     * Builds a bridge if the current map has a river.
+     * The bridge is constructed by removing a water tile and adding a bridge tile at its place.
+     * The player must in the desired location to build the bridge, then this algorithm will find the water tile adjacent to the player.
+     */
     private void buildBridge() {
-        // TODO - Add logic to build bridge
-        // TODO - Rename world getter to something more appropriate.
-        
-        if (currentWorld.getHasBridge()) {
 
-            
-            Rectangle constructionBoundBox = new Rectangle(getX(), getY(), getImage().getWidth(), getImage().getHeight());
-            if (constructionBoundBox.contains(currentWorld.getConstructionLocation())) {
-                
-                Actor waterTile = getOneObjectAtOffset(0, 16, WaterTile.class);
-                if (waterTile != null) {
-                    
-                    System.out.println("Found water tile!");
-                    
-                    Point bridgeLocation = new Point(waterTile.getX(), waterTile.getY());
-                    objectManager.removeObject(waterTile);
-                    objectManager.addBridgeTile(bridgeLocation);
+        final int tileSize = 16;
+
+        if (isTouching(WalkWay.class)) {
+
+            if(playerStats.getWoodCount() >= MIN_WOODCOUNT) {
+
+                // Try to find either the water tile above or below the walkway tile.
+                Actor waterTile = getOneObjectAtOffset(0, tileSize, WaterTile.class);
+                if (waterTile == null) {
+                    waterTile = getOneObjectAtOffset(0, -tileSize, WaterTile.class);    
+                } 
+
+                // If we found a water tile, replace it with a bridge tile.
+                if (waterTile != null) {                    
+                    objectManager.replaceTile(waterTile, new BridgeTile());
+                    playerStats.removeWood(MIN_WOODCOUNT);
                 }
-            }            
+
+            }
         }
+        currentState = BeaverState.MOVING;
     }
     
+    /**
+     * Collects the key if the player intersects with it,
+     * sets the player stats to having the key,
+     * then removes the key from the world. 
+     */
     private void collectKey() {
         
         Actor key = getOneIntersectingObject(Key.class);
@@ -178,15 +209,20 @@ public class Beaver extends Actor
             objectManager.removeObject(key);
             playerStats.collectKey();
             System.out.println("Key collected!");
-        }
-        
+        }        
         currentState = BeaverState.MOVING;
     }
     
+    /**
+     * Performs the chopping action, collecting wood from trees.
+     * If the chopping time counter exceeds the maximum chopping time, 
+     * then we remove the selected wood tiles from the world and adds wood to the player stats.
+     */
     private void chopping() {
         
+        woodChoppingTimeCounter++;
+
         // TODO - Add chopping gif to start here and end once inside below if statement.
-        System.out.println("Collecting wood.");
         
         if (woodChoppingTimeCounter > MAX_CHOPPING_TIME) {
             
@@ -201,27 +237,33 @@ public class Beaver extends Actor
             // Reset the state and time.
             currentState = BeaverState.MOVING;
             woodChoppingTimeCounter = 0;
-        }
-        
-        woodChoppingTimeCounter++;
-    }
+        }        
+    }    
     
-    
+    /**
+     * Collects health if the player's stats allow it.
+     * removes the intersecting BerryTile object from the object manager,
+     * and sets the current state to BeaverState.MOVING.
+     */
     private void collectHealth() {
         
         if (playerStats.canAddLife()) {
             System.out.println("Health added!");
             Actor healthTiles = getOneIntersectingObject(BerryTile.class);
             objectManager.removeObject(healthTiles);
-        }
-        
+        }        
         currentState = BeaverState.MOVING;
     }
 
     private void recieveAttack() {
-        // Any code needed whilst being attacked, currently just to 
+        // Any code needed whilst being attacked. 
     }
     
+    /**
+     * Decreases the player's life and updates the game state accordingly.
+     * If the player's life reaches zero, we transition to the game over screen.
+     * Otherwise, the player's health is decreased.
+     */
     private void receiveDamage() {
         
         if (playerStats.decreaseLife()) {
@@ -231,40 +273,14 @@ public class Beaver extends Actor
             System.out.println("Health decreased!");
         }
         currentState = BeaverState.MOVING;
-    }
+    }    
     
-    
-    private void handleMovement() {
-        
-        if (buildingKeyDown != Greenfoot.isKeyDown("b")) {
-            
-            buildingKeyDown = !buildingKeyDown;
-            
-            if (buildingKeyDown) {
-                currentState = BeaverState.BRIDGE_BUILDING;
-            }
-        }
-        
-        if (isTouching(Key.class)) {
-            System.out.println("Key found!");
-            currentState = BeaverState.RX_KEY;
-        }
-
-        if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
-
-            choppingKeyDown = !choppingKeyDown;
-
-            if (choppingKeyDown) {
-                currentState = BeaverState.SEARCHING_FOR_WOOD;
-            }
-        }
-
-        if (isTouching(BerryTile.class)) {
-
-            if (playerStats.getLivesCount() < playerStats.getMAX_LIVES()) {                
-                currentState = BeaverState.RX_HEALTH;            
-            }
-        }
+    /**
+     * Handles the movement of the Beaver object based on user input.
+     * The Beaver can move up, down, left, or right using the 'w', 's', 'a', and 'd' keys respectively.
+     * If the Beaver reaches the edge of the current world, it will change to the adjacent world in the corresponding direction.
+     */
+    private void handleMovement() {   
 
         // Up
         if (Greenfoot.isKeyDown("w")) {
@@ -307,26 +323,78 @@ public class Beaver extends Actor
         }
     }
 
-    private void searchForWood() {
-        System.out.println("Looking for tree");
+    /**
+     * Handles non-movement input for the beaver character.
+     * Checks for key, berry tile, building, and chopping inputs
+     * and updates the current state accordingly.
+     */
+    private void handleNonMovementInput() {
 
+        if (isTouching(Key.class)) {
+            System.out.println("Key found!");
+            currentState = BeaverState.RX_KEY;
+        }
+
+        if (isTouching(BerryTile.class)) {
+
+            if (playerStats.getLivesCount() < playerStats.getMAX_LIVES()) {                
+                currentState = BeaverState.RX_HEALTH;            
+            }
+        }
+
+        if (buildingKeyDown != Greenfoot.isKeyDown("b")) {  
+            handleKeyDownEvent(buildingKeyDown, BeaverState.BRIDGE_BUILDING);
+        }        
+
+        if (choppingKeyDown != Greenfoot.isKeyDown("p")) {
+            handleKeyDownEvent(choppingKeyDown, BeaverState.SEARCHING_FOR_WOOD);
+        }
+    }
+
+    /**
+     * Handles the key down event for the beaver.
+     * 
+     * @param isKeyDown the current state of the key (true if key is down, false if key is up)
+     * @param state the new state to set for the beaver
+     */
+    private void handleKeyDownEvent(boolean isKeyDown, BeaverState state) {
+        isKeyDown = !isKeyDown;
+        if (isKeyDown) {
+            currentState = state;
+        }        
+    }
+
+    /**
+     * Searches for a wood tile within a certain radius.
+     * If a wood tile is found, it checks if there is a whole tree (all wood type tiles touching each other).
+     * If a tree is found, the beaver's state is set to chopping.
+     * If no wood tile is found, the beaver's state is set to moving.
+     */
+    private void searchForWood() {        
+       
         // Look for a wood tile
-        List<WoodTile> currentWood = getObjectsInRange(25, WoodTile.class);
+        List<WoodTile> currentWood = getObjectsInRange(WOOD_SEARCH_RADIUS, WoodTile.class);
         if (currentWood.size() > 0) {
-
-            System.out.println("Found some wood!");
 
             // Now make sure we "get" the whole tree, or,
             // all wood type tiles that are touching each other.
-            currentTree = getObjectsInRange(50, WoodTile.class);
+            currentTree = getObjectsInRange(TREE_SEARCH_RADIUS, WoodTile.class);
             if (currentTree.size() > 0) {
                 System.out.println("Found a tree! : " + currentTree.size());
 
                 currentState = BeaverState.CHOPPING;
             }
+        }else{
+            currentState = BeaverState.MOVING;
         }
     }
-
+    
+    /**
+     * Caches the current locations beffore checking for collisions with other objects.
+     * If a collision occurs, the beaver's location is reverted to the cached position.
+     * @param x the x-coordinate of the new location
+     * @param y the y-coordinate of the new location
+     */
     private void collisionSetLocation(final int x, final int y) {
         final int oldX = getX();
         final int oldY = getY();

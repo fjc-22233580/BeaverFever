@@ -21,6 +21,7 @@ public class GameMap extends World
 
     private boolean hasBridge;
 
+    
     private Point constructionLocation;   
     
     /**
@@ -36,8 +37,9 @@ public class GameMap extends World
         this.hasBridge = hasBridge;
         
         setBackground(backGround); 
+        setPaintOrder(Beaver.class);
     }
-
+    
     /**
      * Constructor for objects of class GameMap.
      * 
@@ -54,10 +56,15 @@ public class GameMap extends World
         setBackground(backGround);
     }
     
-    public boolean getHasBridge() {
+    // TODO - dev only method. Remove when done.
+    public void setHasBridge(boolean hasBridge) {
+        this.hasBridge = hasBridge;
+    }
+    
+    public boolean hasBridge() {
         return hasBridge;
     }
-
+    
     public Point getConstructionLocation() {
         return constructionLocation;
     }
@@ -65,7 +72,7 @@ public class GameMap extends World
     @Override
     public void act() {
         super.act();
-
+        
         if(devMode) {
             
             if (Greenfoot.mouseClicked(null)) {
