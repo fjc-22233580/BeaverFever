@@ -97,7 +97,7 @@ public class PlayerStats {
         hasKey = true;
     }
     
-    public boolean isHasKey() {
+    public boolean hasKey() {
         return hasKey;
     }
 }

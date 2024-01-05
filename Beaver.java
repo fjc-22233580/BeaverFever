@@ -32,7 +32,7 @@ public class Beaver extends Actor
     /**
      * The minimum wood count required to build a bridge portion.     
      */
-    private final int MIN_WOODCOUNT = 5;
+    private final int MIN_WOODCOUNT = 1;
     
     /**
      * Reference to the current world - used to determine when cross the edge of the world. 
@@ -143,7 +143,7 @@ public class Beaver extends Actor
             case SEARCHING_FOR_WOOD:
                 searchForWood();
                 break;
-            case CHOPPING:
+            case WOOD_CHOPPING:
                 chopping();
                 break;
             case RX_ATTACK:
@@ -160,6 +160,9 @@ public class Beaver extends Actor
                 break;
             case BRIDGE_BUILDING:
                 buildBridge();
+                break;
+                case RESCUING_PRINCESS:
+                worldManager.winGame();
                 break;
             default:
                 break;
@@ -208,6 +211,7 @@ public class Beaver extends Actor
         if (key != null) {
             objectManager.removeObject(key);
             playerStats.collectKey();
+            worldManager.setKeyCollected();
             System.out.println("Key collected!");
         }        
         currentState = BeaverState.MOVING;
@@ -330,8 +334,11 @@ public class Beaver extends Actor
      */
     private void handleNonMovementInput() {
 
+        if (isTouching(PrincessOlive.class) && playerStats.hasKey()) {
+            currentState = BeaverState.RESCUING_PRINCESS;
+        }
+
         if (isTouching(Key.class)) {
-            System.out.println("Key found!");
             currentState = BeaverState.RX_KEY;
         }
 
@@ -382,7 +389,7 @@ public class Beaver extends Actor
             if (currentTree.size() > 0) {
                 System.out.println("Found a tree! : " + currentTree.size());
 
-                currentState = BeaverState.CHOPPING;
+                currentState = BeaverState.WOOD_CHOPPING;
             }
         }else{
             currentState = BeaverState.MOVING;

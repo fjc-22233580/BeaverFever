@@ -88,6 +88,8 @@ public class WorldManager {
 
     private EnemyPathsManager enemyPathsManager;
 
+    private PrincessOlive princess = new PrincessOlive();
+
 
     public EnemyPathsManager getEnemyPathsManager() {
         return enemyPathsManager;
@@ -165,9 +167,12 @@ public class WorldManager {
 
     private void addPrincess() {
 
-        Point princessPoint = new Point(112, 45);
-        PrincessOlive princess = new PrincessOlive();
+        Point princessPoint = new Point(112, 45);        
         worlds[0][1].addObject(princess, princessPoint.x, princessPoint.y);
+    }
+
+    public void setKeyCollected() {
+        princess.setKeyCollected();
     }
 
     private void addKey() {
@@ -234,7 +239,7 @@ public class WorldManager {
     }
 
     public void winGame() {
-        
+
         FinishScreen finishScreen = new FinishScreen(true);
         Greenfoot.setWorld(finishScreen);
     }

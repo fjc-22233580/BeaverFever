@@ -1,8 +1,9 @@
 public enum BeaverState {
     MOVING,
-    CHOPPING,
+    WOOD_CHOPPING,
     SEARCHING_FOR_WOOD, 
     BRIDGE_BUILDING,
+    RESCUING_PRINCESS,
     RX_ATTACK,
     RX_DAMAGE,
     RX_HEALTH,  
