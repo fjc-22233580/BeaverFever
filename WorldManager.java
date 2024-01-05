@@ -27,9 +27,9 @@ public class WorldManager {
         // 12. OPTIONAL - BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
         //// 13. Complete - Remove old code in GameMap for knowing it has a river, now based on WalkWay tile.
         //// 14. COMPLETE - Made factory for tiles and introced base class
-        // 15. Increase castle size slightly
+        //// 15. Complete - Increase castle size slightly
         //// 16. Complete - Add gif chopping gif to beaver
-        // 17. Optional - Reset mechanism and currently broken from Greenfoot.
+        //// 17. Complete - Reset mechanism and currently broken from Greenfoot.
         // 18. Optional - Add "Restart" button to "Game Over" screen.
         // 19. Optional - Add "Restart" button to "Finish" screen.
         // 20. Tweak stats bar to show key. 
@@ -96,6 +96,8 @@ public class WorldManager {
     private EnemyPathsManager enemyPathsManager;
 
     private PrincessOlive princess = new PrincessOlive();
+    private Beaver beaver;
+    GameMap firstWorld;
 
 
     public EnemyPathsManager getEnemyPathsManager() {
@@ -124,10 +126,9 @@ public class WorldManager {
 
             objectManager = new ObjectManager();
             playerStats = new PlayerStats();
+            beaver = new Beaver(objectManager, playerStats);
 
-            Beaver beaver = new Beaver(objectManager, playerStats);
-            
-            GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
+            firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
 
             
             maxX = firstWorld.getWidth();
@@ -169,6 +170,9 @@ public class WorldManager {
             }
             
             isInitialised = true;
+        } else {
+            // Reset the player stats
+            resetGame();
         }
     }
 
@@ -249,6 +253,11 @@ public class WorldManager {
 
         FinishScreen finishScreen = new FinishScreen(true);
         Greenfoot.setWorld(finishScreen);
+    }
+
+    public void resetGame() {
+        firstWorld.addObject(beaver, 120, 120);
+        beginGame();
     }
 
     public void loseGame() {
