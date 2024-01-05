@@ -117,8 +117,7 @@ public class WorldManager {
 
             Beaver beaver = new Beaver(objectManager, playerStats);
             
-            boolean hasBridge = false;
-            GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0, hasBridge);
+            GameMap firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
 
             
             maxX = firstWorld.getWidth();
@@ -136,7 +135,7 @@ public class WorldManager {
                         worlds[i][j] = firstWorld;
                     } else {
                         GreenfootImage  img = mapNumbers.get(worldIndex_1d);
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d, hasBridge); 
+                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d); 
                     }
                     
                     //System.out.print("(" + i + "," + j + " + " + imgIndex +")");                    
@@ -153,22 +152,17 @@ public class WorldManager {
             
             playerStats.addStatusBarToWorld(firstWorld);           
 
-            if(isDevMode == false) {
-                setBridgeMaps();
+            if(isDevMode == false) {                
                 addEnemies();
                 addKey();
+                addPrincess();
             }
             
             isInitialised = true;
         }
     }
 
-    //TODO - Remove this method when done, figured out how to know of bridge world?
-    //TODO - Actually just check on walkway tile? If so, remove stuff from GameMap
-    private void setBridgeMaps() {
-            
-        GameMap map = (GameMap)worlds[2][0];
-        map.setHasBridge(true);
+    private void addPrincess() {
     }
 
     private void addKey() {
