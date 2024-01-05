@@ -5,17 +5,12 @@ public class PrincessOlive extends Actor {
 
 
     public PrincessOlive() {
-        GreenfootImage image = new GreenfootImage("Happyprincessv2.png");
-        setImage(image);
-    }
-
-    public void winGame(){
-        GreenfootImage image = new GreenfootImage("sadprincessv2.png");
-        setImage(image);
-    }
-
-    public void act() {
-        
+        GreenfootImage sadOlive = new GreenfootImage("sad_princess.png");
+        setImage(sadOlive);
     }
     
+    public void winGame(){
+        GreenfootImage happyOlive = new GreenfootImage("happy_princess.png");
+        setImage(happyOlive);
+    }    
 }

@@ -1,6 +1,7 @@
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+
 import greenfoot.Greenfoot;
 import greenfoot.GreenfootImage;
 import greenfoot.World;
@@ -163,6 +164,10 @@ public class WorldManager {
     }
 
     private void addPrincess() {
+
+        Point princessPoint = new Point(112, 45);
+        PrincessOlive princess = new PrincessOlive();
+        worlds[0][1].addObject(princess, princessPoint.x, princessPoint.y);
     }
 
     private void addKey() {
