@@ -31,7 +31,7 @@ public class GameMap extends World
         this.worldId = worldId;
         
         setBackground(backGround); 
-        setPaintOrder(Beaver.class);
+        setPaintOrder(StatusBar.class, Label.class, Beaver.class);
     }
     
     @Override
