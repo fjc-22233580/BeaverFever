@@ -17,14 +17,12 @@ public class FinishScreen extends World {
 
 
         if (win) {
-            GreenfootImage winimage = new GreenfootImage("game complete page.png");
-            setBackground(winimage);
+            GreenfootImage winImage = new GreenfootImage("game complete page.png");
+            setBackground(winImage);
 
         } else {
-            GreenfootImage loseimage = new GreenfootImage("Game over screen.png");
-            setBackground(loseimage);
+            GreenfootImage loseImage = new GreenfootImage("Game over screen.png");
+            setBackground(loseImage);
         }
-    
-        // TODO - Add a button to restart the game
     }
 }

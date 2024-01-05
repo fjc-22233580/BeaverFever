@@ -21,16 +21,7 @@ public class TitleScreen extends World {
         GreenfootImage titlecard = new GreenfootImage("title card v3.png");
         setBackground(titlecard);
 
-        prepare();
-    }
-
-    /**
-     * Prepare the world for the start of the program.
-     * That is: create the initial objects and add them to the world.
-     */
-    private void prepare() {
-        Button button = new Button();
+        Button button = new Button("Start.png");
         addObject(button, 120, 200);
-
     }
 }
