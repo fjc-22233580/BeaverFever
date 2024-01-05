@@ -8,12 +8,15 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class StatusBar extends Actor
 {
-    /**
-     * Act - do whatever the StatusBar wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
-    {
-        // Add your action code here.
+
+    public StatusBar() {
+
+        GreenfootImage toolBarNoKey = new GreenfootImage("Toolbar.png");
+        setImage(toolBarNoKey);
+    }
+
+    public void setKeyCollected() {
+        GreenfootImage toolBarKey = new GreenfootImage("Toolbar_Key.png");
+        setImage(toolBarKey);
     }
 }

@@ -34,7 +34,7 @@ public class PlayerStats {
         
         // Set both wood and health on the same line,
         // but add a space between them for the heart icon.
-        String output = woodCount + "         " + livesCount;
+        String output = woodCount + "       " + livesCount;
         statusBarLabel.setValue(output);
     }
     
@@ -95,6 +95,7 @@ public class PlayerStats {
     
     public void collectKey() {
         hasKey = true;
+        statusBar.setKeyCollected();
     }
     
     public boolean hasKey() {
