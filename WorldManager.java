@@ -11,20 +11,20 @@ public class WorldManager {
 
         // Code:
 
-        // 1. Complete - Add counter for health - currently only wood is reported.
-        // 2. WIP - Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
-        //    builds a portion of the bridge with a small time - can be based off the game cycle iteration.
-        // 3. Complete - Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
+        //// 1. Complete - Add counter for health - currently only wood is reported.
+        //// 2. Complete - Add bridge building mechanism - suggest another key binding that only works if near the river, in one spot, then each press,
+        ////    builds a portion of the bridge with a small time - can be based off the game cycle iteration.
+        //// 3. Complete - Key collection: Add key collection, once past 1st river, hold this as a boolean in the player stats
         // 4. WIP - Add "Finish" and "Game over" screens to the WorldManager class, and methods to get to those screens.
-        // 5. Add logic for reaching the princess, and goes to "Finish" screen.
-        // 6. COMPLETE - Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
+        //* 5. Add logic for reaching the princess, and goes to "Finish" screen.
+        //// 6. COMPLETE - Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
         // 7. Add comments to everything
         // 8. WIP - Review all code, any duplication?
-        // 9. Complete - Re-factor getNextPoint method
+        //// 9. Complete - Re-factor getNextPoint method
         // 10. Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
         // 12. OPTIONAL - BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
-        // 13. Pass the construction point to necessary worlds
+        // 13. Remove old code in GameMap for knowing it has a river, now based on WalkWay tile.
         // 14. COMPLETE - Made factory for tiles and introced base class
 
 
