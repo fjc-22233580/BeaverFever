@@ -21,7 +21,7 @@ public class EuclideanFunctions {
      * @param STEP_SIZE The step size, normally the velocity of the enemy.
      * @return The calculated next point.
      */
-    public Point getNextPoint(Point currentPoint, Point destinationPoint, int STEP_SIZE, String callingMethod) {      
+    public Point getNextPoint(Point currentPoint, Point destinationPoint, int STEP_SIZE) {      
 
         Point nextPoint = null;
 

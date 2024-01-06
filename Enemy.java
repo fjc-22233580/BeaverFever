@@ -40,7 +40,7 @@ public class Enemy extends Actor
      * 3. ATTACKING
      * 4. RETURNING
      */ 
-    private EnemyState state;
+    private EnemyState state = null;
     
     /**
      * The list of points that the enemy will patrol.
@@ -80,6 +80,12 @@ public class Enemy extends Actor
      */
     private int attacklessCounter = 0;
 
+    /**
+     * Reference the class provides Euclidean functions, 
+     * we also need a list of points (patrol path) to calculate the nearest point.
+     */
+    private EuclideanFunctions euclideanFunctions;
+
      /**
      * Constructs an enemy with the given path points and initial location (this is used to reset the enemy position).    
      * @param pathPoints the list of points representing the path that the enemy will follow
@@ -96,12 +102,25 @@ public class Enemy extends Actor
         this.pathPoints = pathPoints;
         this.initialLocation = initialLocationPoint;
 
+        euclideanFunctions = new EuclideanFunctions(pathPoints);
+
         // Set the wolverine image.
         GreenfootImage image = new GreenfootImage("wolverine.png");
-        setImage(image);
+        setImage(image);        
+    }
+
+    /**
+     * Called when the enemy is added to the world.
+     * Sets the initial state to PATROLLING.
+     * Needed to be done here, as the world is not set when the constructor is called.
+     */
+    @Override
+    protected void addedToWorld(World world) {
+        super.addedToWorld(world);
 
         // Set the initial state
         state = EnemyState.PATROLLING;
+        resetEnemyPosition();
     }
     
     /**
@@ -110,24 +129,27 @@ public class Enemy extends Actor
      */
     public void act() {
 
-        switch (state) {
-            case PATROLLING:
-                patrol();
-                break;
-            case CHASING:
-                chasing();
-                break;
-            case ATTACKING:
-                attacking();
-                break;
-            case RETURNING:
-                returning();
-                break;
+        // Check for null state, as the state is set in the addedToWorld method, which is called after the constructor.
+        if(state != null) {
+
+            switch (state) {
+                case PATROLLING:
+                    patrol();
+                    break;
+                case CHASING:
+                    chasing();
+                    break;
+                case ATTACKING:
+                    attacking();
+                    break;
+                case RETURNING:
+                    returning();
+                    break;
+            }
         }
 
         resetAttacklessPeriod();
     }
-
     
     /**
      * Resets the attackless period for the enemy.
@@ -153,13 +175,14 @@ public class Enemy extends Actor
 
         // Get the nearest point in the path to us.
         Point currentLocation = new Point(getX(), getY());
-        destinationPoint = EuclideanFunctions.getNearestPoint(pathPoints, currentLocation);
+        destinationPoint = euclideanFunctions.getNearestPoint(currentLocation);
         
         // Set the location index to the nearest point, so patrolling can continue from there
-        locationIndex = pathPoints.indexOf(destinationPoint);
-        
-        Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, destinationPoint, VELOCITY);
+        locationIndex = pathPoints.indexOf(destinationPoint);        
+        Point nextPoint = euclideanFunctions.getNextPoint(currentLocation, destinationPoint, VELOCITY);
+
         collisionSetLocation(nextPoint);
+        System.out.println("returning: " + nextPoint.x + ", " + nextPoint.y);
         state = EnemyState.PATROLLING;
     }
 
@@ -196,13 +219,13 @@ public class Enemy extends Actor
         Point currentLocation = new Point(getX(), getY());            
         Point playerLocation = new Point(player.getX(), player.getY());
 
-        double chasingDistance = EuclideanFunctions.getDistance(currentLocation, playerLocation);
+        double chasingDistance = euclideanFunctions.getDistance(currentLocation, playerLocation);
         if (chasingDistance < CHASING_RADIUS && canAttack) {            
 
-            Point nextPoint = EuclideanFunctions.getNextPoint(currentLocation, playerLocation, VELOCITY);
+            Point nextPoint = euclideanFunctions.getNextPoint(currentLocation, playerLocation, VELOCITY);
             collisionSetLocation(nextPoint);
 
-            double attackingDistance = EuclideanFunctions.getDistance(currentLocation, playerLocation);
+            double attackingDistance = euclideanFunctions.getDistance(currentLocation, playerLocation);
             if (attackingDistance < ATTACKING_RADIUS) {
                 state = EnemyState.ATTACKING;                
             }
@@ -243,10 +266,11 @@ public class Enemy extends Actor
 
         // Get the next point based on the VELOCITY, torwards the destination point.
         destinationPoint = pathPoints.get(locationIndex);
-        Point nextPoint = EuclideanFunctions.getNextPoint(currentPoint, destinationPoint, VELOCITY);
+        Point nextPoint = euclideanFunctions.getNextPoint(currentPoint, destinationPoint, VELOCITY);
 
         // Move the enemy to the next point, and check for collisions.
         collisionSetLocation(nextPoint);
+        System.out.println("patrol: " + nextPoint.x + ", " + nextPoint.y);
 
         // Check if the player is within the detection radius.
         if (detectPlayer()) {
