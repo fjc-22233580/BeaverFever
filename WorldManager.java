@@ -20,7 +20,6 @@ public class WorldManager {
         ///// 5. Complete -  Add logic for reaching the princess, and goes to "Finish" screen.
         //// 6. COMPLETE - Needs Testing - Add logic for running out of lives, and goes to "Game Over" screen.
         // 7. Add comments to everything
-        // 8. WIP - Review all code, any duplication?
         //// 9. Complete - Re-factor getNextPoint method
         //// 10. REMOVED - Add "Dev Mode" button to title screen, which sets the isDevMode flag in the WorldManager class.
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
@@ -31,8 +30,11 @@ public class WorldManager {
         //// 16. Complete - Add gif chopping gif to beaver
         //// 17. Complete - Reset mechanism and currently broken from Greenfoot.
         //// 20. Complete Tweak stats bar to show key. 
-        // 21. Investigate bug where enemy goes to 0,0.
+        //// 21. Complete - Investigate bug where enemy goes to 0,0.
         // 22. Add enemies to other maps. (x3?)
+        //// 23. Complete - Change img of enemy when attacking. 
+        // 24. Status bar not rendered after reset.
+        //// 25. Complete - Set enemy attack time into final. 
 
 
 
@@ -256,6 +258,8 @@ public class WorldManager {
     }
 
     public void resetGame() {
+        currentCol = 0;
+        currentRow = 0;
         firstWorld.addObject(beaver, 120, 120);
         beginGame();
     }

@@ -17,21 +17,23 @@ public class Enemy extends Actor
      * A frame is the cycle of each call of the act method, which is usually set to 60Hz.
      */
     private final int VELOCITY = 2; 
+
+    private final int ATTACK_TIME = 60;
     
     /**
      * The delay between attacks.
      * Set as 120 frames.
      */
     private final int ATTACK_DELAY = 120; 
-
+    
     //#region Radii for detection, chasing and attacking
-
+    
     private final int DETECTION_RADIUS = 60;
     private final int CHASING_RADIUS = 50;
     private final int ATTACKING_RADIUS = 30;
-
+    
     //#endregion
-
+    
     /**
      * The current state of the enemy.
      * Can be one of the following:
@@ -74,11 +76,17 @@ public class Enemy extends Actor
      */
     private boolean canAttack = true;
     
+    
     /**
      * A counter to keep track of the number of frames since the last attack,
      * whilst this is counting up, the enemy cannot attack.
      */
     private int attacklessCounter = 0;
+
+    /**
+     * The counter for tracking the time since an attack started. 
+     */
+    private int attackTimeCounter = 0;
 
     /**
      * Reference the class provides Euclidean functions, 
@@ -189,9 +197,6 @@ public class Enemy extends Actor
         state = EnemyState.PATROLLING;
     }
 
-    // TODO - Rename once we know how long to delay.
-    private int delayCounter = 0;
-
     /**
      * The enemy attacking method, which is called when the enemy is in the ATTACKING state.
      * Sets the player to being attacked, and then returns to the RETURNING state after a delay.
@@ -202,15 +207,15 @@ public class Enemy extends Actor
 
         setImage(attackingGif.getCurrentImage());
 
-        if (delayCounter > 60) {
+        if (attackTimeCounter > ATTACK_TIME) {
             player.setBeingAttacked(false);
             state = EnemyState.RETURNING;
             canAttack = false;
-            delayCounter = 0;
+            attackTimeCounter = 0;
             setImage(defaultImage);
         }
 
-        delayCounter++;
+        attackTimeCounter++;
     }
     
     /**
