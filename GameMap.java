@@ -27,13 +27,14 @@ public class GameMap extends World
      * Constructor for objects of class GameMap.
      * 
      */
-    public GameMap(int mapWidth, int mapHeight, boolean isBounded, GreenfootImage backGround, boolean devMod, int worldId)
+    public GameMap(int mapWidth, int mapHeight, boolean isBounded, boolean devMod, int worldId)
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(mapWidth, mapHeight, 1, isBounded);
         this.devMode = devMod;
         this.worldId = worldId;
         
+        GreenfootImage backGround = new GreenfootImage("grass.png");
         setBackground(backGround); 
         setPaintOrder(Label.class, StatusBar.class,  Beaver.class, Enemy.class);
     }

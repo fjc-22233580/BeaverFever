@@ -9,7 +9,7 @@ import greenfoot.World;
 public class WorldManager { 
 
     // #region WorldManager Singleton Instance
-    
+
     private static WorldManager instance;
 
     public static WorldManager getInstance(){
@@ -61,20 +61,6 @@ public class WorldManager {
         if (isInitialised == false) {
 
             enemyPathsManager = new EnemyPathsManager();
-            
-            
-            // Test images for world identification
-            List<GreenfootImage> mapNumbers = new ArrayList<>();
-            mapNumbers.add(new GreenfootImage("1.png"));
-            mapNumbers.add(new GreenfootImage("2.png"));
-            mapNumbers.add(new GreenfootImage("3.png"));
-            mapNumbers.add(new GreenfootImage("4.png"));
-            mapNumbers.add(new GreenfootImage("5.png"));
-            mapNumbers.add(new GreenfootImage("6.png"));
-            mapNumbers.add(new GreenfootImage("7.png"));
-            mapNumbers.add(new GreenfootImage("8.png"));
-            mapNumbers.add(new GreenfootImage("9.png"));
-
             objectManager = new ObjectManager();
             playerStats = new PlayerStats();
             beaver = new Beaver(objectManager, playerStats);
@@ -88,10 +74,9 @@ public class WorldManager {
                     // Initialise our maps - for the first one we have already instantiated it (to add the player),
                     // so add the correct ref, else create new ones. 
                     if (i == 0 && j == 0) {
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);                                 
+                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, isDevMode, 0);                                 
                     } else {
-                        GreenfootImage img = mapNumbers.get(worldIndex_1d);
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d); 
+                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, isDevMode, worldIndex_1d); 
                     }
                 }
             }
