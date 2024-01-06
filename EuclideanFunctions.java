@@ -2,29 +2,38 @@ import java.awt.Point;
 import java.util.List;
 
 /**
- * This class provides helper methods for Euclidean calculations.
+ * This class provides helper methods for 2d space Euclidean calculations.
  */
 public class EuclideanFunctions {
 
+    /**
+     * Represents a list of points that define a path.
+     */
+    private List<Point> pathPoints;
+
+    public EuclideanFunctions(List<Point> pathPoints) {
+        this.pathPoints = pathPoints;
+    }
+
     /** Gets the next point between a current point and a destination point, based on a step size.
      * @param currentPoint The current point, normally where the enemy is when the method is called.
-     * @param destinatioPoint The destination point, normally the next point in the path.
+     * @param destinationPoint The destination point, normally the next point in the path.
      * @param STEP_SIZE The step size, normally the velocity of the enemy.
      * @return The calculated next point.
      */
-    public static Point getNextPoint(Point currentPoint, Point destinatioPoint, int STEP_SIZE) {
+    public Point getNextPoint(Point currentPoint, Point destinationPoint, int STEP_SIZE, String callingMethod) {      
 
         Point nextPoint = null;
 
         // If the current point is the destination point, then use the current point as the next point
-        if (currentPoint == destinatioPoint) {
+        if (currentPoint.equals(destinationPoint)) {
             nextPoint = currentPoint;
         } else {
 
             double x1 = currentPoint.x;
             double y1 = currentPoint.y;
-            double x2 = destinatioPoint.x;
-            double y2 = destinatioPoint.y;
+            double x2 = destinationPoint.x;
+            double y2 = destinationPoint.y;
     
             // Calculate vector from current to destination
             double vx = x2 - x1;
@@ -48,11 +57,10 @@ public class EuclideanFunctions {
     } 
 
     /** Gets the nearest point from a list of points, based on a current point.
-     * @param pathPoints The list of points, normally the path of the enemy.
      * @param currentPoint The current point, normally where the enemy is when the method is called.
      * @return The nearest point in the patrol path that enemy is nearest to.
      */
-    public static Point getNearestPoint(List<Point> pathPoints, Point currentPoint){       
+    public Point getNearestPoint(Point currentPoint){       
 
         // Set initial minimum value
         Point nearestPoint = pathPoints.get(0);
@@ -78,7 +86,7 @@ public class EuclideanFunctions {
      * @param pointB The second point.
      * @return The distance between the two points.
      */
-    public static double getDistance(Point pointA, Point pointB)
+    public double getDistance(Point pointA, Point pointB)
     {
         double a = pointB.x - pointA.x;
         double b = pointB.y - pointA.y;
