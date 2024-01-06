@@ -25,16 +25,18 @@ public class WorldManager {
         // 11. BUG - Increase rad of tree collection - large tree is partially missed. 
         // 12. OPTIONAL - BUG - Add logic to enemy so after initial attack, it does a loop of the map, and then attacks again - perhaps instead of delay timer? 
         //// 13. Complete - Remove old code in GameMap for knowing it has a river, now based on WalkWay tile.
-        //// 14. COMPLETE - Made factory for tiles and introced base class
+        //// 14. Complete - Made factory for tiles and introced base class
         //// 15. Complete - Increase castle size slightly
         //// 16. Complete - Add gif chopping gif to beaver
         //// 17. Complete - Reset mechanism and currently broken from Greenfoot.
         //// 20. Complete Tweak stats bar to show key. 
         //// 21. Complete - Investigate bug where enemy goes to 0,0.
-        // 22. Add enemies to other maps. (x3?)
+        //// 22. Complete Add enemies to other maps. (x3?)
         //// 23. Complete - Change img of enemy when attacking. 
         // 24. Status bar not rendered after reset.
         //// 25. Complete - Set enemy attack time into final. 
+        // 26. Remove test backgrounds and replace with grass
+        // 27. Reset stats after reset.
 
 
 
@@ -82,12 +84,11 @@ public class WorldManager {
     private final int MAP_WIDTH = 240;
     private final int MAP_HEIGHT = 240;
 
+    private Point initialLocation = new Point(MAP_WIDTH/2, MAP_HEIGHT/2);
+
     // Set the initial position
     private int currentRow = 0;
     private int currentCol = 0;
-
-    private int maxX;
-    private int maxY;
 
     private World[][] worlds = new World[ROWS][COLS];
 
@@ -99,7 +100,6 @@ public class WorldManager {
 
     private PrincessOlive princess = new PrincessOlive();
     private Beaver beaver;
-    GameMap firstWorld;
 
 
     public EnemyPathsManager getEnemyPathsManager() {
@@ -129,12 +129,6 @@ public class WorldManager {
             objectManager = new ObjectManager();
             playerStats = new PlayerStats();
             beaver = new Beaver(objectManager, playerStats);
-
-            firstWorld = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
-
-            
-            maxX = firstWorld.getWidth();
-            maxY = firstWorld.getHeight();
             
             for (int i = 0; i < ROWS; i++) {                
                 
@@ -144,29 +138,32 @@ public class WorldManager {
                     
                     // Initialise our maps - for the first one we have already instantiated it (to add the player),
                     // so add the correct ref, else create new ones. 
+                    // TODO - add first enemy - currently skipped. 
                     if (i == 0 && j == 0) {
-                        worlds[i][j] = firstWorld;
+
+                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
+                        worlds[i][j].addObject(beaver, 120, 102);
+                        playerStats.addStatusBarToWorld(worlds[i][j]);  
+                                 
                     } else {
-                        GreenfootImage  img = mapNumbers.get(worldIndex_1d);
+                        GreenfootImage img = mapNumbers.get(worldIndex_1d);
                         worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d); 
+
+                        if(isDevMode == false) {
+
+                            if (enemyPathsManager.getAllWorldIds().contains(worldIndex_1d)) {
+                                Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(worldIndex_1d), initialLocation);
+                                worlds[i][j].addObject(enemy, initialLocation.x, initialLocation.y);
+                            }
+                        }
                     }
-                    
-                    //System.out.print("(" + i + "," + j + " + " + imgIndex +")");                    
-                    //System.out.println();
                 }
-                
-                //System.out.println();
             }
             
             MapParser mapParser = new MapParser(worlds);
-            mapParser.prepareAllMaps();
+            mapParser.prepareAllMaps();            
 
-            firstWorld.addObject(beaver, 120, 120);
-            
-            playerStats.addStatusBarToWorld(firstWorld);           
-
-            if(isDevMode == false) {                
-                addEnemies();
+            if(isDevMode == false) { 
                 addKey();
                 addPrincess();
             }
@@ -195,17 +192,6 @@ public class WorldManager {
         worlds[2][0].addObject(key, keyPoint.x, keyPoint.y);
     }
 
-    private void addEnemies() {
-
-        int x = enemyPathsManager.getEnemyPath(7).get(0).x;
-        int y = enemyPathsManager.getEnemyPath(7).get(0).y;
-
-        Point defaultLocation = new Point(x, y);
-
-        Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(7), defaultLocation);
-        worlds[2][1].addObject(enemy, x, y-20);
-    }
-
     public void setDevMode() {
         isDevMode = true;
     }
@@ -227,14 +213,14 @@ public class WorldManager {
         if (direction == Direction.Up && currentRow > 0) {
             currentRow--;
             spawnX = x;
-            spawnY = maxY;
+            spawnY = MAP_HEIGHT;
         } else if (direction == Direction.Down && currentRow < ROWS - 1) {
             currentRow++;
             spawnX = x;
             spawnY = 0;
         } else if (direction == Direction.Left && currentCol > 0) {
             currentCol--;
-            spawnX = maxX;
+            spawnX = MAP_WIDTH;;
             spawnY = y;
 
         } else if (direction == Direction.Right && currentCol < COLS - 1) {
@@ -260,7 +246,7 @@ public class WorldManager {
     public void resetGame() {
         currentCol = 0;
         currentRow = 0;
-        firstWorld.addObject(beaver, 120, 120);
+        worlds[0][0].addObject(beaver, 120, 120);
         beginGame();
     }
 

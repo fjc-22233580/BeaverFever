@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,6 +35,13 @@ public class EnemyPathsManager {
         return allEnemyPaths.get(worldId);
     }
 
+    public List<Integer> getAllWorldIds() {
+        
+        Set<Integer> keysSet = (Set<Integer>)allEnemyPaths.keySet();
+        List<Integer> keysList = new ArrayList<>(keysSet);
+        return keysList;
+    }   
+
     public void savePaths(int worldId, List<Point> pathPoints) {
 
         allEnemyPaths.put(worldId, pathPoints);
@@ -55,7 +63,7 @@ public class EnemyPathsManager {
         }
     }
 
-    public void loadPaths(String folderPath) throws IOException {
+    private void loadPaths(String folderPath) throws IOException {
 
         // Get all files from this folder.
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(folderPath))) {
