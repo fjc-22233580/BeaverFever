@@ -13,6 +13,10 @@ public class GameMap extends World
 {
     private int worldId;
 
+    public int getWorldId() {
+        return worldId;
+    }
+
     private List<Point> pathPoints = new ArrayList<Point>();
 
     private boolean devMode;

@@ -6,11 +6,13 @@ import greenfoot.World;
 public class PlayerStats {
 
     private final int MAX_LIVES = 3;
+    private final int INITIAL_HEALTH = 2;
+    private final int INITIAL_WOOD = 0;
 
     private boolean hasKey = false;
     
-    private int woodCount = 0;    
-    private int livesCount = 1;  
+    private int woodCount = INITIAL_WOOD;    
+    private int livesCount = INITIAL_HEALTH;  
     private StatusBar statusBar = new StatusBar();
     private Label statusBarLabel = new Label("", 12); 
     
@@ -100,5 +102,13 @@ public class PlayerStats {
     
     public boolean hasKey() {
         return hasKey;
+    }
+
+    public void resetStats() {
+        woodCount = INITIAL_WOOD;
+        livesCount = INITIAL_HEALTH;
+        hasKey = false;
+        statusBar.setDefaultStatusBar();
+        setFormattedLabelInfo();
     }
 }

@@ -11,6 +11,10 @@ public class StatusBar extends Actor
 
     public StatusBar() {
 
+        setDefaultStatusBar();
+    }
+
+    public void setDefaultStatusBar() {
         GreenfootImage toolBarNoKey = new GreenfootImage("Toolbar.png");
         setImage(toolBarNoKey);
     }

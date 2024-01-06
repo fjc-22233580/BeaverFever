@@ -93,17 +93,18 @@ public class WorldManager {
     // Set the initial position
     private int currentRow = 0;
     private int currentCol = 0;
-
+    
     private World[][] worlds = new World[ROWS][COLS];
-
+    
     private boolean isInitialised = false;
-
+    
     private boolean isDevMode = false;
-
+    
     private EnemyPathsManager enemyPathsManager;
-
+    
     private PrincessOlive princess = new PrincessOlive();
     private Beaver beaver;
+    private MapParser mapParser;
 
 
     public EnemyPathsManager getEnemyPathsManager() {
@@ -143,32 +144,19 @@ public class WorldManager {
                     // Initialise our maps - for the first one we have already instantiated it (to add the player),
                     // so add the correct ref, else create new ones. 
                     if (i == 0 && j == 0) {
-
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
-                        worlds[i][j].addObject(beaver, beaverLocation.x, beaverLocation.y);
-                        playerStats.addStatusBarToWorld(worlds[i][j]);  
-                                 
+                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);                                 
                     } else {
                         GreenfootImage img = mapNumbers.get(worldIndex_1d);
                         worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d); 
                     }
-
-                    if(isDevMode == false) {
-
-                        if (enemyPathsManager.getAllWorldIds().contains(worldIndex_1d)) {
-                            Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(worldIndex_1d), initialLocation);
-                            worlds[i][j].addObject(enemy, initialLocation.x, initialLocation.y);
-                        }
-                    }
                 }
             }
             
-            MapParser mapParser = new MapParser(worlds);
+            mapParser = new MapParser(worlds);
             mapParser.prepareAllMaps();            
 
             if(isDevMode == false) { 
-                addKey();
-                addPrincess();
+                addNonTerrainTiles();
             }
             
             isInitialised = true;
@@ -178,21 +166,38 @@ public class WorldManager {
         }
     }
 
-    private void addPrincess() {
+    private void addNonTerrainTiles(){
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+
+                int worldIndex_1d = i * COLS + j;
+                // Initialise our maps - for the first one we have already instantiated it (to
+                // add the player),
+                // so add the correct ref, else create new ones.
+                if (i == 0 && j == 0) {
+
+                    worlds[i][j].addObject(beaver, beaverLocation.x, beaverLocation.y);
+                    playerStats.addStatusBarToWorld(worlds[i][j]);
+                }
+
+                if (enemyPathsManager.getAllWorldIds().contains(worldIndex_1d)) {
+                    Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(worldIndex_1d), initialLocation);
+                    worlds[i][j].addObject(enemy, initialLocation.x, initialLocation.y);
+                }
+            }
+        }
+
 
         Point princessPoint = new Point(112, 45);        
         worlds[0][1].addObject(princess, princessPoint.x, princessPoint.y);
-    }
-
-    public void setKeyCollected() {
-        princess.setKeyCollected();
-    }
-
-    private void addKey() {
 
         Point keyPoint = new Point(58,197);
         Key key = new Key();
         worlds[2][0].addObject(key, keyPoint.x, keyPoint.y);
+    }
+
+    public void setKeyCollected() {
+        princess.setKeyCollected();
     }
 
     public void setDevMode() {
@@ -202,6 +207,8 @@ public class WorldManager {
     public void beginGame(){        
         Greenfoot.setWorld(worlds[0][0]);
     }     
+
+    World currentMap;
 
     public void changeWorld(Direction direction, int x, int y, World callingWorld, Beaver callingWombat){
 
@@ -232,12 +239,12 @@ public class WorldManager {
             spawnY = y;
         }
         
-        World destination = worlds[currentRow][currentCol];        
-        destination.addObject(callingWombat, spawnX, spawnY);
+        currentMap = worlds[currentRow][currentCol];        
+        currentMap.addObject(callingWombat, spawnX, spawnY);
 
-        playerStats.addStatusBarToWorld(destination);
+        playerStats.addStatusBarToWorld(currentMap);
 
-        Greenfoot.setWorld(destination);
+        Greenfoot.setWorld(currentMap);
     }
 
     public void winGame() {
@@ -249,7 +256,15 @@ public class WorldManager {
     public void resetGame() {
         currentCol = 0;
         currentRow = 0;
-        worlds[0][0].addObject(beaver, beaverLocation.x, beaverLocation.y);
+        
+        playerStats.resetStats();
+
+        mapParser.prepareAllMaps();
+
+        if (isDevMode == false) {
+            addNonTerrainTiles();
+        }
+
         beginGame();
     }
 

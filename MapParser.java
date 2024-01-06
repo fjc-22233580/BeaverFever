@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import greenfoot.Actor;
 import greenfoot.World;
 
 public class MapParser {
@@ -46,17 +47,20 @@ public class MapParser {
     }
 
     public void prepareAllMaps() {
-        try {
 
-            getTileIDs("actortypes");
-            getMapFiles("griddata");
-            getTileImagePaths("images\\tiles");
-            isImportComplete = true;
-
-        } catch (Exception e) {            
-            System.err.println("Error!");
-            System.err.println(e.getMessage());
-            throw new UnknownError();
+        if(isImportComplete == false) {
+            try {
+    
+                getTileIDs("actortypes");
+                getMapFiles("griddata");
+                getTileImagePaths("images\\tiles");
+                isImportComplete = true;
+    
+            } catch (Exception e) {            
+                System.err.println("Error!");
+                System.err.println(e.getMessage());
+                throw new UnknownError();
+            }
         }
 
         if (isImportComplete) {
@@ -87,6 +91,12 @@ public class MapParser {
 
         final int TILE_COLS = 15;
         final int TILE_ROWS = 15;
+
+        // Remove any previous tiles
+        List<Actor> tiles = currentWorld.getObjects(null);
+        if (tiles.size() > 0) {
+            currentWorld.removeObjects(tiles);
+        }
 
         TileFactory tileFactory = new TileFactory();
 
