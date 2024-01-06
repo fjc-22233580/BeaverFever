@@ -86,6 +86,10 @@ public class Enemy extends Actor
      */
     private EuclideanFunctions euclideanFunctions;
 
+    private GreenfootImage defaultImage = new GreenfootImage("wolverine.png");
+
+    private GifImage attackingGif = new GifImage("wattack.gif");
+
      /**
      * Constructs an enemy with the given path points and initial location (this is used to reset the enemy position).    
      * @param pathPoints the list of points representing the path that the enemy will follow
@@ -104,9 +108,8 @@ public class Enemy extends Actor
 
         euclideanFunctions = new EuclideanFunctions(pathPoints);
 
-        // Set the wolverine image.
-        GreenfootImage image = new GreenfootImage("wolverine.png");
-        setImage(image);        
+        // Set the wolverine image.        
+        setImage(defaultImage);        
     }
 
     /**
@@ -197,13 +200,14 @@ public class Enemy extends Actor
 
         player.setBeingAttacked(true);
 
-        // TODO - Add attack animation here
+        setImage(attackingGif.getCurrentImage());
 
         if (delayCounter > 60) {
             player.setBeingAttacked(false);
             state = EnemyState.RETURNING;
             canAttack = false;
             delayCounter = 0;
+            setImage(defaultImage);
         }
 
         delayCounter++;
