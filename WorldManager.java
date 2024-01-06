@@ -33,10 +33,12 @@ public class WorldManager {
         //// 21. Complete - Investigate bug where enemy goes to 0,0.
         //// 22. Complete Add enemies to other maps. (x3?)
         //// 23. Complete - Change img of enemy when attacking. 
-        // 24. Status bar not rendered after reset.
+        // 24. Bug: Status bar not rendered after reset.
         //// 25. Complete - Set enemy attack time into final. 
         // 26. Remove test backgrounds and replace with grass
         // 27. Reset stats after reset.
+        //// 28. Move beaver spawn point.
+        // 29. Bug: if restart in world 0,0, then position is not reset.  
 
 
 
@@ -85,6 +87,8 @@ public class WorldManager {
     private final int MAP_HEIGHT = 240;
 
     private Point initialLocation = new Point(MAP_WIDTH/2, MAP_HEIGHT/2);
+
+    private Point beaverLocation = new Point(40, 40);
 
     // Set the initial position
     private int currentRow = 0;
@@ -138,23 +142,22 @@ public class WorldManager {
                     
                     // Initialise our maps - for the first one we have already instantiated it (to add the player),
                     // so add the correct ref, else create new ones. 
-                    // TODO - add first enemy - currently skipped. 
                     if (i == 0 && j == 0) {
 
                         worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, mapNumbers.get(0), isDevMode, 0);
-                        worlds[i][j].addObject(beaver, 120, 102);
+                        worlds[i][j].addObject(beaver, beaverLocation.x, beaverLocation.y);
                         playerStats.addStatusBarToWorld(worlds[i][j]);  
                                  
                     } else {
                         GreenfootImage img = mapNumbers.get(worldIndex_1d);
                         worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, img, isDevMode, worldIndex_1d); 
+                    }
 
-                        if(isDevMode == false) {
+                    if(isDevMode == false) {
 
-                            if (enemyPathsManager.getAllWorldIds().contains(worldIndex_1d)) {
-                                Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(worldIndex_1d), initialLocation);
-                                worlds[i][j].addObject(enemy, initialLocation.x, initialLocation.y);
-                            }
+                        if (enemyPathsManager.getAllWorldIds().contains(worldIndex_1d)) {
+                            Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(worldIndex_1d), initialLocation);
+                            worlds[i][j].addObject(enemy, initialLocation.x, initialLocation.y);
                         }
                     }
                 }
@@ -246,7 +249,7 @@ public class WorldManager {
     public void resetGame() {
         currentCol = 0;
         currentRow = 0;
-        worlds[0][0].addObject(beaver, 120, 120);
+        worlds[0][0].addObject(beaver, beaverLocation.x, beaverLocation.y);
         beginGame();
     }
 
