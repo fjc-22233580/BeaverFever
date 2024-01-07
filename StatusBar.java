@@ -1,16 +1,12 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class StatusBar here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * The StatusBar class represents the status bar in the game.
+ * It is displayed in the top left corner of the screen.
  */
-public class StatusBar extends Actor
-{
+public class StatusBar extends Actor{
 
     public StatusBar() {
-
         setDefaultStatusBar();
     }
 

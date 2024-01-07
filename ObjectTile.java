@@ -1,7 +1,7 @@
 import greenfoot.*; // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Represents a water tile in the game.
+ * Represents an object tile in the game - which is the default tile type.
  * Extends the BaseTile class.
  */
 public class ObjectTile extends BaseTile {
