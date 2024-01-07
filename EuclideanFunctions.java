@@ -26,6 +26,7 @@ public class EuclideanFunctions {
         Point nextPoint = null;
 
         // If the current point is the destination point, then use the current point as the next point
+        // This can occur when the enemy is returning to a point that is very closer to the current point.
         if (currentPoint.equals(destinationPoint)) {
             nextPoint = currentPoint;
         } else {

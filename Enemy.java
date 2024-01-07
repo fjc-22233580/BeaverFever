@@ -4,10 +4,10 @@ import java.awt.Rectangle;
 import java.util.List;
 
 /**
- * Write a description of class Enemy here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * The Enemy class represents the wolverine character in the game.
+ * It has 4 states: PATROLLING, CHASING, ATTACKING, and RETURNING; 
+ * and implements logic for each state.
+ * The enemy follows a predefined path and interacts with the player character.
  */
 public class Enemy extends Actor
 {    
@@ -21,7 +21,7 @@ public class Enemy extends Actor
     private final int ATTACK_TIME = 60;
     
     /**
-     * The delay between attacks.
+     * The delay between possible attacks.
      * Set as 120 frames.
      */
     private final int ATTACK_DELAY = 120; 
@@ -74,8 +74,7 @@ public class Enemy extends Actor
      * This is used to prevent the enemy from attacking too frequently,
      * and is reset using the resetAttacklessPeriod method based on the ATTACK_DELAY.
      */
-    private boolean canAttack = true;
-    
+    private boolean canAttack = true;    
     
     /**
      * A counter to keep track of the number of frames since the last attack,
@@ -94,8 +93,14 @@ public class Enemy extends Actor
      */
     private EuclideanFunctions euclideanFunctions;
 
+    /**
+     * The default image for the enemy.
+     */
     private GreenfootImage defaultImage = new GreenfootImage("wolverine.png");
 
+    /**
+     * The attacking GIF image for the enemy.
+     */
     private GifImage attackingGif = new GifImage("wattack.gif");
 
      /**

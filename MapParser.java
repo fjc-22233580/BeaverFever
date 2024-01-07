@@ -38,13 +38,7 @@ public class MapParser {
     private List<Integer> fenceTiles = new ArrayList<>();
 
     public MapParser(World[][] worlds) {
-
-        if (HelperMethods.isSquare(worlds)) {
-            this.worlds = worlds;
-        } else {
-            System.out.println("Grid is not square!");
-            throw new IllegalArgumentException();
-        }
+        this.worlds = worlds;
     }
 
     public void prepareAllMaps() {

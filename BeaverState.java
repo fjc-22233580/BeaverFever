@@ -1,3 +1,6 @@
+/**
+ * Represents the different states of a beaver.
+ */
 public enum BeaverState {
     MOVING,
     WOOD_CHOPPING,

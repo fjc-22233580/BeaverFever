@@ -14,8 +14,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * The EnemyPathsManager class manages the paths for all enemies in the game.
+ * It provides methods to load, save, and retrieve enemy paths based on world IDs.
+ */
 public class EnemyPathsManager {
 
+    /**
+     * A HashMap that stores the paths for all enemies.
+     * The keys are the world IDs, and the values are lists of points representing the paths.
+     */
     private HashMap<Integer, List<Point>> allEnemyPaths = new HashMap<Integer, List<Point>>();    
 
     public EnemyPathsManager() {
@@ -25,16 +33,24 @@ public class EnemyPathsManager {
             System.out.println("Enemy paths loaded succesfully!");
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
+            System.out.println("Error loading enemy paths: " + e.getMessage());
+            throw new UnknownError();
+        }        
     }
 
+    /**
+     * Retrieves the enemy path for the specified world ID.
+     *
+     * @param worldId the ID of the world
+     * @return the enemy path as a list of points
+     */
     public List<Point> getEnemyPath(int worldId) {
         return allEnemyPaths.get(worldId);
     }
 
+    /**
+     * Returns a list of all world IDs.
+     */
     public List<Integer> getAllWorldIds() {
         
         Set<Integer> keysSet = (Set<Integer>)allEnemyPaths.keySet();
@@ -42,6 +58,12 @@ public class EnemyPathsManager {
         return keysList;
     }   
 
+    /**
+     * Saves the enemy paths for a specific world to a CSV file.
+     *
+     * @param worldId    the ID of the world
+     * @param pathPoints the list of path points for the enemy
+     */
     public void savePaths(int worldId, List<Point> pathPoints) {
 
         allEnemyPaths.put(worldId, pathPoints);
@@ -56,13 +78,17 @@ public class EnemyPathsManager {
                 writer.write(String.join(",", rowString));
                 writer.newLine();
             }
-
-            System.out.println("CSV for world: " + worldId + " updated succesfully!");
         } catch (IOException e) {
             System.err.println("Error writing CSV file: " + e.getMessage());
         }
     }
 
+    /**
+     * Loads enemy paths from a specified folder.
+     * 
+     * @param folderPath the path to the folder containing the enemy path files
+     * @throws IOException if an I/O error occurs while reading the files
+     */
     private void loadPaths(String folderPath) throws IOException {
 
         // Get all files from this folder.
@@ -85,17 +111,18 @@ public class EnemyPathsManager {
 
                             // Go through all rows
                             String line;
-                            while ((line = br.readLine()) != null) {                               
+                            while ((line = br.readLine()) != null) {  
 
-                                Point currentPoint = new Point();
-
+                                // Split the row into values
                                 String[] rowValues = line.split(",");
 
+                                // Try to onvert the values to integers
                                 Integer currentValueX = HelperMethods.tryParseInt(rowValues[0]);
                                 Integer currentValueY = HelperMethods.tryParseInt(rowValues[1]);
 
+                                // If we have valid values, create a point and add it to the list
                                 if (currentValueX != null && currentValueY != null) {
-                                    currentPoint = new Point(currentValueX, currentValueY);
+                                    Point currentPoint = new Point(currentValueX, currentValueY);
                                     values.add(currentPoint);
                                 }
                             }
@@ -116,6 +143,5 @@ public class EnemyPathsManager {
                 }
             }
         }
-
     }
 }
