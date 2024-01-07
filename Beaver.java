@@ -418,7 +418,8 @@ public class Beaver extends Actor
         setLocation(x, y);
 
         // In case we collie with any of the following objects, revert to the previous position.
-        if (isTouching(ObjectTile.class) || isTouching(WoodTile.class) || isTouching(WaterTile.class) || isTouching(Enemy.class)) {
+        if (isTouching(ObjectTile.class) || isTouching(WoodTile.class) || isTouching(WaterTile.class)
+                || isTouching(Enemy.class) || isTouching(FenceTile.class)) {
 
             // Collided with an object, so revert to previous position.
             setLocation(oldX, oldY);

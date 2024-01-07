@@ -35,6 +35,7 @@ public class MapParser {
     private List<Integer> berryTileIDs = new ArrayList<>();
     private List<Integer> waterTileIDs = new ArrayList<>();
     private List<Integer> walkWayTiles = new ArrayList<>();
+    private List<Integer> fenceTiles = new ArrayList<>();
 
     public MapParser(World[][] worlds) {
 
@@ -196,7 +197,9 @@ public class MapParser {
             return ActorType.WATER;
         } else if (walkWayTiles.contains(tileID)) {
             return ActorType.WALKWAY;
-        } else 
+        } else if (fenceTiles.contains(tileID)) {
+            return ActorType.FENCE;
+        } 
 
         return ActorType.OTHER;
     }
@@ -262,7 +265,10 @@ public class MapParser {
 
                                 walkWayTiles = new ArrayList<>(values);
                                 
-                            } else{
+                            }else if (headerName.contains("fences")) {
+
+                                fenceTiles = new ArrayList<>(values); 
+                            } else {
 
                                 System.err.println("Invalid Column Header!" + headerName);
                             }

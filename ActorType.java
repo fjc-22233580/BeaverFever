@@ -3,5 +3,6 @@ public enum ActorType {
     WOOD,
     BERRY,
     WATER,
-    WALKWAY
+    WALKWAY,
+    FENCE
 }

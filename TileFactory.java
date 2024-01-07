@@ -25,6 +25,8 @@ public class TileFactory {
                 return new WaterTile(tilePath, type);
             case WALKWAY:
                 return new WalkWay(tilePath, type);
+            case FENCE:
+                return new FenceTile(tilePath, type);
             case OTHER:
                 return new ObjectTile(tilePath, type);
             default:
