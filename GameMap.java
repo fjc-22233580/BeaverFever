@@ -21,10 +21,7 @@ public class GameMap extends World
 
     private boolean devMode;
 
-    private EnemyPathsManager enemyPathsManager = WorldManager.getInstance().getEnemyPathsManager();    
-    
-    // Greenfootsound
-    private GreenfootSound backgroundMusic = new GreenfootSound("HoliznaCC0 - 2nd Dimension.mp3");
+    private EnemyPathsManager enemyPathsManager = WorldManager.getInstance().getEnemyPathsManager();  
 
     /**
      * Constructor for objects of class GameMap.
@@ -40,9 +37,6 @@ public class GameMap extends World
         GreenfootImage backGround = new GreenfootImage("grass.png");
         setBackground(backGround); 
         setPaintOrder(Label.class, StatusBar.class,  Beaver.class, Enemy.class);
-
-        // Play the background music
-        backgroundMusic.playLoop(); 
     }
 
     @Override

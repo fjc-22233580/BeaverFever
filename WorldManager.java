@@ -1,17 +1,20 @@
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.List;
-
 import greenfoot.Greenfoot;
-import greenfoot.GreenfootImage;
 import greenfoot.World;
 
+/**
+ * The WorldManager class is responsible for instantiating all the maps in the world and manages the transition between them.
+ * It implements the Singleton design pattern to ensure that only one instance of the WorldManager exists throughout the game.
+ */
 public class WorldManager { 
 
     // #region WorldManager Singleton Instance
 
+    private boolean isInitialised = false;
+    
     private static WorldManager instance;
-
+    
     public static WorldManager getInstance(){
         if (instance == null) {
             instance = new WorldManager();
@@ -20,70 +23,74 @@ public class WorldManager {
     }
     
     // #endregion
-
-    private ObjectManager objectManager;
-    private PlayerStats playerStats;
-
+    
+    // #region Constants
+    
     private final int ROWS = 3;
     private final int COLS = 3;
-
     private final int MAP_WIDTH = 240;
     private final int MAP_HEIGHT = 240;
-
-    private Point initialLocation = new Point(MAP_WIDTH/2, MAP_HEIGHT/2);
-
-    private Point beaverLocation = new Point(40, 40);
-
-    // Set the initial position
-    private int currentRow = 0;
-    private int currentCol = 0;
     
+    private final Point WORLD_CENTRE_LOCATION = new Point(MAP_WIDTH/2, MAP_HEIGHT/2);
+    private final Point BEAVER_LOCATION = new Point(40, 40);
+    
+    // #endregion
+    
+    // Create our 2D array of worlds
     private World[][] worlds = new World[ROWS][COLS];
     
-    private boolean isInitialised = false;
+    // Create out management classes
+    private MapParser mapParser;    
+    private ObjectManager objectManager;
+    private PlayerStats playerStats;
+    private EnemyPathsManager enemyPathsManager;    
     
-    private boolean isDevMode = false;
-    
-    private EnemyPathsManager enemyPathsManager;
-    
-    private PrincessOlive princess = new PrincessOlive();
+    private FinishScreen finishScreen;
+    private GameMap startingMap;
+
+    // Create our actors
+    private PrincessOlive princess;
     private Beaver beaver;
-    private MapParser mapParser;
 
+    // Set the initial world to the top left
+    private int currentRow = 0;
+    private int currentCol = 0;   
+    
+    // Set the dev mode flag, will be set in the Button class,
+    // and used to determine whether to add the non-terrain tiles
+    // in dev mode we can create the points for enemy patrol paths.
+    private boolean isDevMode = false; 
 
-    public EnemyPathsManager getEnemyPathsManager() {
-        return enemyPathsManager;
-    }
-
+    /**
+     * Initializes the WorldManager by creating and initializing the necessary objects and maps.
+     * If the WorldManager has already been initialized, it resets the player stats.
+     */
     public void initialize() {
-
+        
         // Cache our worlds - first time only.
         if (isInitialised == false) {
-
+            
             enemyPathsManager = new EnemyPathsManager();
             objectManager = new ObjectManager();
             playerStats = new PlayerStats();
             beaver = new Beaver(objectManager, playerStats);
+            princess = new PrincessOlive();
             
-            for (int i = 0; i < ROWS; i++) {                
-                
-                for (int j = 0; j < COLS; j++) {
-                    
-                    int worldIndex_1d = i * COLS + j;
-                    
-                    // Initialise our maps - for the first one we have already instantiated it (to add the player),
-                    // so add the correct ref, else create new ones. 
-                    if (i == 0 && j == 0) {
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, isDevMode, 0);                                 
-                    } else {
-                        worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, isDevMode, worldIndex_1d); 
-                    }
+            for (int i = 0; i < ROWS; i++) {
+                for (int j = 0; j < COLS; j++) {                    
+                    // Get the 1D index of the world, this will be become the worldId in each map.
+                    int worldIndex_1d = i * COLS + j;                    
+                    worlds[i][j] = new GameMap(MAP_WIDTH, MAP_HEIGHT, false, isDevMode, worldIndex_1d); 
                 }
             }
             
+            // Create our map parser, passing in our 2d array of worlds and prepare all the maps
             mapParser = new MapParser(worlds);
             mapParser.prepareAllMaps();   
 
+            // Cache the starting map
+            startingMap = (GameMap)worlds[0][0];
+            
             if(isDevMode == false) { 
                 addNonTerrainTiles();
             }
@@ -94,63 +101,126 @@ public class WorldManager {
             resetGame();
         }
     }
-
+    public EnemyPathsManager getEnemyPathsManager() {
+        return enemyPathsManager;
+    }
+    
+    /**
+     * Adds non-terrain tiles to the worlds.
+     * For each tile in the worlds grid, it checks if it needs to add a beaver and a status bar for the first map.
+     * For the rest of the maps, if the map has an enemy path, it adds an enemy.
+     * It also adds a princess object to the second tile of the first row and a key object to the first tile of the third row.
+     */
     private void addNonTerrainTiles(){
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
-
-                int worldIndex_1d = i * COLS + j;
-                // Initialise our maps - for the first one we have already instantiated it (to
-                // add the player),
-                // so add the correct ref, else create new ones.
-                if (i == 0 && j == 0) {
-
-                    worlds[i][j].addObject(beaver, beaverLocation.x, beaverLocation.y);
+                
+                int mapId = i * COLS + j;
+                
+                // For our first map, add the beaver and the status bar
+                if (i == 0 && j == 0) {                    
+                    worlds[i][j].addObject(beaver, BEAVER_LOCATION.x, BEAVER_LOCATION.y);
                     playerStats.addStatusBarToWorld(worlds[i][j]);
                 }
-
-                if (enemyPathsManager.getAllWorldIds().contains(worldIndex_1d)) {
-                    Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(worldIndex_1d), initialLocation);
-                    worlds[i][j].addObject(enemy, initialLocation.x, initialLocation.y);
+                
+                // For the rest of our maps, if the map has an enemy path, add an enemy
+                if (enemyPathsManager.getAllWorldIds().contains(mapId)) {
+                    Enemy enemy = new Enemy(enemyPathsManager.getEnemyPath(mapId), WORLD_CENTRE_LOCATION);
+                    worlds[i][j].addObject(enemy, WORLD_CENTRE_LOCATION.x, WORLD_CENTRE_LOCATION.y);
                 }
             }
-        }
-
-
+        }        
+        
         Point princessPoint = new Point(112, 45);        
         worlds[0][1].addObject(princess, princessPoint.x, princessPoint.y);
-
+        
         Point keyPoint = new Point(58,197);
         Key key = new Key();
         worlds[2][0].addObject(key, keyPoint.x, keyPoint.y);
     }
+    
+    public void beginGame(){ 
+        Greenfoot.setWorld(startingMap);
+    }   
 
+  
+    public void resetGame() {
+        // Set world to top left.
+        currentCol = 0;
+        currentRow = 0;
+
+        playerStats.resetStats();        
+        beaver.setDefaultState();
+        mapParser.prepareAllMaps();
+        
+        if (isDevMode == false) {
+            addNonTerrainTiles();
+        }       
+        
+        beginGame();
+    }    
+
+    /**
+     * Stops the background music, creates a finish screen with a win message,
+     * and sets the finish screen as the current world.
+     */
+    public void winGame() {
+
+        finishScreen = new FinishScreen(true);
+        Greenfoot.setWorld(finishScreen);
+    }
+
+    /**
+     * Stops the music, creates a finish screen indicating that the game has been lost,
+     * and sets the finish screen as the current world.
+     */
+    public void loseGame() {
+
+        finishScreen = new FinishScreen(false);        
+        Greenfoot.setWorld(finishScreen);
+    }
+
+    /**
+     * Sets the key as collected by the player.
+     * This method updates the state of the princess and removes fences from the world.
+     */
     public void setKeyCollected() {
+        // Update princess image
         princess.setKeyCollected();
-        removeFences();
-    }
 
-    private void removeFences() {
+        // Remove fences
         List<FenceTile> fences = worlds[0][1].getObjects(FenceTile.class);
-        worlds[0][1].removeObjects(fences);        
+        worlds[0][1].removeObjects(fences); 
     }
-
+    
+    /**
+     * Sets the development mode of the WorldManager.
+     * When in development mode, no enemies are added to the world and path creation is enabled.
+     */
     public void setDevMode() {
         isDevMode = true;
     }
 
-    public void beginGame(){        
-        Greenfoot.setWorld(worlds[0][0]);
-    }     
-
-    World currentMap;
-
+    /**
+     * Changes the world based on the given direction and coordinates.
+     * Removes the calling wombat from the current world, resets the enemy,
+     * and adds the calling wombat to the new world at the specified spawn coordinates.
+     * Updates the current row and column indices based on the direction.
+     * Adds the player stats status bar to the new world.
+     * Sets the new world as the active world.
+     * 
+     * @param direction the direction to change the world
+     * @param x the x-coordinate of the calling wombat's spawn point
+     * @param y the y-coordinate of the calling wombat's spawn point
+     * @param callingWorld the current world
+     * @param callingWombat the calling wombat object
+     */
     public void changeWorld(Direction direction, int x, int y, World callingWorld, Beaver callingWombat){
 
         callingWorld.removeObject(callingWombat);
-
         resetEnemy(callingWorld);
 
+        // Set the spawn coordinates based on the direction, and exit point.
         int spawnX = 0;
         int spawnY = 0;
 
@@ -174,41 +244,16 @@ public class WorldManager {
             spawnY = y;
         }
         
-        currentMap = worlds[currentRow][currentCol];        
+        GameMap currentMap = (GameMap)worlds[currentRow][currentCol];        
         currentMap.addObject(callingWombat, spawnX, spawnY);
-
         playerStats.addStatusBarToWorld(currentMap);
-
         Greenfoot.setWorld(currentMap);
-    }
+    }    
 
-    public void winGame() {
-
-        FinishScreen finishScreen = new FinishScreen(true);
-        Greenfoot.setWorld(finishScreen);
-    }
-
-    public void resetGame() {
-        currentCol = 0;
-        currentRow = 0;
-
-        playerStats.resetStats();
-
-        mapParser.prepareAllMaps();
-
-        if (isDevMode == false) {
-            addNonTerrainTiles();
-        }
-
-        beginGame();
-    }
-
-    public void loseGame() {
-
-        FinishScreen finishScreen = new FinishScreen(false);        
-        Greenfoot.setWorld(finishScreen);
-    }
-
+    /**
+     * Resets the position of the enemy in the calling world.   
+     * @param callingWorld the world from which to reset the enemy position
+     */
     private void resetEnemy(World callingWorld) {
 
         List<Enemy> enemies = callingWorld.getObjects(Enemy.class);
