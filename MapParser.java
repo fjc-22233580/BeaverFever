@@ -14,9 +14,14 @@ import java.util.List;
 import greenfoot.Actor;
 import greenfoot.World;
 
+/**
+ * The MapParser class is responsible for parsing map data and populating the worlds with tiles.
+ * It reads tile IDs, map files, and tile images to create the maps.
+ * The class also provides methods to retrieve the type of actor associated with a tile ID.
+ */
 public class MapParser {
 
-    // 
+    // Rows and Cols are hardcoded because we know the map is 3x3
     private final int ROWS = 3;
     private final int COLS = 3;
     
@@ -25,11 +30,22 @@ public class MapParser {
      */
     private HashMap<Integer, String> tileImagesList = new HashMap<>();
 
+    /**
+     * List of map tiles.
+     */
     private List<String> mapTilesList = new ArrayList<>();
 
+    /**
+     * Indicates whether the import of map data is complete.
+     */
     private boolean isImportComplete;
 
+    /**
+     * Represents a two-dimensional array of World objects.
+     */
     private World[][] worlds;
+
+    // #region Lists of different types of tile IDs
 
     private List<Integer> woodTileIDs = new ArrayList<>();
     private List<Integer> berryTileIDs = new ArrayList<>();
@@ -37,12 +53,24 @@ public class MapParser {
     private List<Integer> walkWayTiles = new ArrayList<>();
     private List<Integer> fenceTiles = new ArrayList<>();
 
+    // #endregion
+
     public MapParser(World[][] worlds) {
         this.worlds = worlds;
     }
 
+    /**
+     * Prepares all the maps by parsing the necessary key information required to create the maps.
+     * This includes retrieving tile IDs, map files, and tile images.
+     * If the import process is not complete, it attempts to retrieve the information and sets the import status to complete.
+     * If the import process is complete, it populates all the worlds with the parsed information.
+     */
     public void prepareAllMaps() {
 
+        // Try to parse all the key information we need to create the maps:
+        // 1. Tile IDs
+        // 2. Map files
+        // 3. Tile images
         if(isImportComplete == false) {
             try {
     
@@ -62,8 +90,14 @@ public class MapParser {
             populateAllWorlds();
         }
     }
-
-    // Iterates 9 times
+    
+    /**
+     * Populates all the worlds in the game.
+     * This method iterates through each cell in the worlds array and populates it with map data.
+     * It retrieves the current map data from the mapTilesList and parses it into a 2D array of TileInfo objects.
+     * Then, it calls the populateMap method to populate the current world with specific actors (tiles).
+     * Will iterate 9 times. (3x3)
+     */
     private void populateAllWorlds() {
 
         for (int i = 0; i < ROWS; i++) {
@@ -80,8 +114,13 @@ public class MapParser {
             }
         }
     }
-
-    // Iterates 225 times
+    
+    /**
+     * Populates the map with tiles based on the given currentMapTiles array.
+     * 
+     * @param currentWorld the world in which the tiles will be added
+     * @param currentMapTiles the 2D array of TileInfo objects representing the map tiles
+     */
     private void populateMap(World currentWorld, TileInfo[][] currentMapTiles ){
 
         final int TILE_COLS = 15;
@@ -93,6 +132,7 @@ public class MapParser {
             currentWorld.removeObjects(tiles);
         }
 
+        // Create a tile factory to create the tiles
         TileFactory tileFactory = new TileFactory();
 
         for (int x = 0; x < TILE_COLS; x++) {
@@ -114,16 +154,25 @@ public class MapParser {
         }
     }
 
+    /**
+     * Parses the map data from the given file path and returns a 2D array of TileInfo objects representing the map grid.
+     *
+     * @param mapPath the file path of the map data file
+     * @return a 2D array of TileInfo objects representing the map grid
+     */
     private TileInfo[][] parseMapData(String mapPath) {
 
+        // Fixed values for the map grid
         final int TILE_COLS = 15;
         final int TILE_ROWS = 15;
 
         TileInfo[][] grid = new TileInfo[TILE_COLS][TILE_ROWS];
 
+        // Offset values for the tiles, based on the tile size
         int xOffset = 16;
         int yOffset = 16;
 
+        // Starting coordinates for the tiles, offset based on half the tile size
         int x = 8;
         int y = 8;
 
@@ -135,7 +184,6 @@ public class MapParser {
             // Rows
             while ((line = br.readLine()) != null) {
 
-                // 1 row
                 // Example: -1,0,5,7,-1,-1
                 String[] rowValues = line.split(",");
 
@@ -144,21 +192,27 @@ public class MapParser {
 
                     int currentTileID = Integer.parseInt(rowValues[i]);
 
+                    // Check we have a tile, be default -1 means no tile at this location
                     if (currentTileID > -1) {
 
                         String tilePath = tileImagesList.get(currentTileID);
 
+                        // Get the actor type based on the tile ID
                         ActorType actorType = getActorType(currentTileID);
+
+                        // Create a new TileInfo object and add it to the grid
                         TileInfo currentTile = new TileInfo(currentTileID, x, y, tilePath, actorType);
                         grid[count][i] = currentTile;
                     }
 
+                    // Handle invalid IDs - throw at this stage to alert user. 
                     if (currentTileID < -1 || currentTileID > tileImagesList.size()) {
                        
                         System.out.println("Illegal index range: " + currentTileID);
                         throw new IllegalArgumentException();
                     }
 
+                    // Offset the x coordinate
                     x += xOffset;
                 }
 
@@ -345,7 +399,6 @@ public class MapParser {
                     String filePath = path.getFileName().toString();
                     if (HelperMethods.getFileExtension(filePath).equalsIgnoreCase(".png")) {
 
-                        // TODO - Reduce complexity of this method
                         File file = new File(filePath);
                         String fileName = HelperMethods.getFileName(file);
                         int fileNumber = Integer.parseInt(fileName);
