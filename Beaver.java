@@ -100,8 +100,7 @@ public class Beaver extends Actor
         this.objectManager = objectManager;
         this.playerStats = playerStats;
         
-        // Set default state for beaver.
-        currentState = BeaverState.MOVING; 
+       setDefaultState();
     }
     
     /**
@@ -424,5 +423,11 @@ public class Beaver extends Actor
             // Collided with an object, so revert to previous position.
             setLocation(oldX, oldY);
         }
+    }
+
+    public void setDefaultState() {
+
+         // Set default state for beaver.
+        currentState = BeaverState.MOVING; 
     }
 }
