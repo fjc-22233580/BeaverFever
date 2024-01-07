@@ -82,7 +82,7 @@ public class WorldManager {
             }
             
             mapParser = new MapParser(worlds);
-            mapParser.prepareAllMaps();            
+            mapParser.prepareAllMaps();   
 
             if(isDevMode == false) { 
                 addNonTerrainTiles();
@@ -127,6 +127,12 @@ public class WorldManager {
 
     public void setKeyCollected() {
         princess.setKeyCollected();
+        removeFences();
+    }
+
+    private void removeFences() {
+        List<FenceTile> fences = worlds[0][1].getObjects(FenceTile.class);
+        worlds[0][1].removeObjects(fences);        
     }
 
     public void setDevMode() {
