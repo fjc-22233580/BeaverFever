@@ -31,7 +31,7 @@ public class Beaver extends Actor
     /**
      * The minimum wood count required to build a bridge portion.     
      */
-    private final int MIN_WOODCOUNT = 1;
+    private final int MIN_WOODCOUNT = 2;
     
     /**
      * Reference to the current world - used to determine when cross the edge of the world. 
