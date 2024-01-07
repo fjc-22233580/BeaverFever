@@ -43,10 +43,7 @@ public class WorldManager {
     private MapParser mapParser;    
     private ObjectManager objectManager;
     private PlayerStats playerStats;
-    private EnemyPathsManager enemyPathsManager;    
-    
-    private FinishScreen finishScreen;
-    private GameMap startingMap;
+    private EnemyPathsManager enemyPathsManager;  
 
     // Create our actors
     private PrincessOlive princess;
@@ -86,10 +83,7 @@ public class WorldManager {
             
             // Create our map parser, passing in our 2d array of worlds and prepare all the maps
             mapParser = new MapParser(worlds);
-            mapParser.prepareAllMaps();   
-
-            // Cache the starting map
-            startingMap = (GameMap)worlds[0][0];
+            mapParser.prepareAllMaps();
             
             if(isDevMode == false) { 
                 addNonTerrainTiles();
@@ -139,11 +133,19 @@ public class WorldManager {
         worlds[2][0].addObject(key, keyPoint.x, keyPoint.y);
     }
     
+    /**
+     * Starts the game by going to the first map
+     */
     public void beginGame(){ 
-        Greenfoot.setWorld(startingMap);
+        Greenfoot.setWorld(worlds[0][0]);
     }   
-
   
+    /**
+     * Resets the game to its initial state.
+     * Sets the world to the first map, resets player stats,
+     * restores the default state of the beaver, prepares all maps,
+     * adds non-terrain tiles if not in developer mode, and starts the game.
+     */
     public void resetGame() {
         // Set world to top left.
         currentCol = 0;
@@ -166,7 +168,7 @@ public class WorldManager {
      */
     public void winGame() {
 
-        finishScreen = new FinishScreen(true);
+        FinishScreen finishScreen = new FinishScreen(true);
         Greenfoot.setWorld(finishScreen);
     }
 
@@ -176,7 +178,7 @@ public class WorldManager {
      */
     public void loseGame() {
 
-        finishScreen = new FinishScreen(false);        
+        FinishScreen finishScreen = new FinishScreen(false);        
         Greenfoot.setWorld(finishScreen);
     }
 
