@@ -1,11 +1,10 @@
 import java.util.List;
-
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
 /**
- * Write a description of class Beaver here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * The Beaver class represents a beaver character in the game.
+ * The beaver can move, chop wood, collect items, and interact with the game world.
+ * It has various states that determine its behavior.
  */
 public class Beaver extends Actor
 {   
@@ -105,7 +104,7 @@ public class Beaver extends Actor
     
     /**
      * Called when the object is added to the world.
-     * Overrides the addedToWorld method from the superclass.     * 
+     * Overrides the addedToWorld method from the superclass.   
      * @param world the world to which the object is added
      */
     @Override
@@ -220,7 +219,6 @@ public class Beaver extends Actor
             objectManager.removeObject(key);
             playerStats.collectKey();
             worldManager.setKeyCollected();
-            System.out.println("Key collected!");
         }        
         currentState = BeaverState.MOVING;
     }
@@ -233,12 +231,9 @@ public class Beaver extends Actor
     private void chopping() {
         
         woodChoppingTimeCounter++;
-
         setImage(choppingGif.getCurrentImage());
         
         if (woodChoppingTimeCounter > MAX_CHOPPING_TIME) {
-            
-            System.out.println("Finished Collecting.");
             
             // Remove selected wood tiles from the world.
             objectManager.removeObjects(currentTree);
@@ -261,7 +256,6 @@ public class Beaver extends Actor
     private void collectHealth() {
         
         if (playerStats.canAddLife()) {
-            System.out.println("Health added!");
             Actor healthTiles = getOneIntersectingObject(BerryTile.class);
             objectManager.removeObject(healthTiles);
         }        
@@ -280,11 +274,8 @@ public class Beaver extends Actor
     private void receiveDamage() {
         
         if (playerStats.decreaseLife()) {
-            System.out.println("You died!");
             worldManager.loseGame();
-        } else {
-            System.out.println("Health decreased!");
-        }
+        } 
         currentState = BeaverState.MOVING;
     }    
     
@@ -396,13 +387,9 @@ public class Beaver extends Actor
             // all wood type tiles that are touching each other.
             currentTree = getObjectsInRange(TREE_SEARCH_RADIUS, WoodTile.class);
             if (currentTree.size() > 0) {
-                System.out.println("Found a tree! : " + currentTree.size());
-
                 currentState = BeaverState.WOOD_CHOPPING;
             }
-        }else{
-            currentState = BeaverState.MOVING;
-        }
+        } else { currentState = BeaverState.MOVING; }
     }
     
     /**
@@ -425,6 +412,9 @@ public class Beaver extends Actor
         }
     }
 
+    /**
+     * Sets the state of the beaver to the default state.
+     */
     public void setDefaultState() {
 
          // Set default state for beaver.
