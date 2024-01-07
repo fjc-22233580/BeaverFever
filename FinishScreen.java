@@ -1,21 +1,18 @@
 import greenfoot.*; // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class FinishScreen here.
- * 
- * @author (your name)
- * @version (a version number or a date)
+ * The FinishScreen class represents the screen displayed at the end of the game.
  */
 public class FinishScreen extends World {
 
     /**
-     * Constructor for objects of class FinishScreen.
-     * 
+     * Constructor for objects of class FinishScreen.      * 
+     * @param win a boolean value indicating whether the player won or lost the game
      */
     public FinishScreen(Boolean win) {
         super(240, 240, 1);
 
-
+        // Display the appropriate image based on the win parameter
         if (win) {
             GreenfootImage winImage = new GreenfootImage("game complete page.png");
             setBackground(winImage);
