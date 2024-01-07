@@ -174,7 +174,6 @@ public class Enemy extends Actor
             if (attacklessCounter > ATTACK_DELAY) {
                 attacklessCounter = 0;
                 canAttack = true;
-                System.out.println("Attack period reset");
             }
         }
     }
@@ -193,7 +192,6 @@ public class Enemy extends Actor
         Point nextPoint = euclideanFunctions.getNextPoint(currentLocation, destinationPoint, VELOCITY);
 
         collisionSetLocation(nextPoint);
-        System.out.println("returning: " + nextPoint.x + ", " + nextPoint.y);
         state = EnemyState.PATROLLING;
     }
 
@@ -279,7 +277,6 @@ public class Enemy extends Actor
 
         // Move the enemy to the next point, and check for collisions.
         collisionSetLocation(nextPoint);
-        System.out.println("patrol: " + nextPoint.x + ", " + nextPoint.y);
 
         // Check if the player is within the detection radius.
         if (detectPlayer()) {
